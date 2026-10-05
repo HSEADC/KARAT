@@ -188,7 +188,8 @@ When reusing, please credit me as: Mercy from Wik`,license:"CC BY-SA 3.0",url:"h
       </form>
     </div>
     <div class="footer__bottom">
-      <span>© 2026 ЗАГРАНЬ · Кристина Фатикова, Валерия Шиян</span>
+      <span>© 2026 ЗАГРАНЬ</span>
+      <span>Фатикова Кристина, Шиян Валерия</span>
     </div></div>`,document.body.append(r)}const t=document.createElement("div");t.innerHTML=`
     <div class="tray" aria-live="polite"></div>
     <div class="overlay" data-overlay>

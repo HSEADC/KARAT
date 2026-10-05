@@ -135,7 +135,8 @@ function renderChrome() {
       </form>
     </div>
     <div class="footer__bottom">
-      <span>© 2026 ЗАГРАНЬ · Кристина Фатикова, Валерия Шиян</span>
+      <span>© 2026 ЗАГРАНЬ</span>
+      <span>Фатикова Кристина, Шиян Валерия</span>
     </div></div>`;
   document.body.append(footer);
   }

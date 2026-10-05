@@ -369,7 +369,7 @@
   .footer__top { flex-direction: column; align-items: flex-start; gap: 22px; }
   .footer__nav { flex-wrap: wrap; gap: 12px 20px; }
   .footer__form { width: 100%; }
-  .footer__bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .footer__bottom { gap: 6px; }
   .toast { left: 12px; right: 12px; top: 76px; text-align: center; }
 }
 
