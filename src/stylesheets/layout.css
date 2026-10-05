@@ -1,0 +1,18 @@
+/* Каркас: контейнер и раскладка «здесь | там» */
+.container { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ---------- split layout: «здесь» | «там» ---------- */
+.split { display: grid; grid-template-columns: 400px 1fr; gap: 40px; padding: 32px 0 96px; align-items: start; }
+.split__main { display: flex; flex-direction: column; gap: 64px; min-width: 0; }
+.panel {
+  position: sticky; top: 108px;
+  background: var(--raised); border-radius: var(--r-xl);
+  padding: 36px 32px 0; display: flex; flex-direction: column; gap: 24px;
+  overflow: hidden;
+}
+.panel__stub { position: relative; margin: 8px -32px 0; padding: 26px 32px 28px; border-top: 1.5px dashed var(--ink); }
+.panel__stub::before, .panel__stub::after { content: ""; position: absolute; top: -14px; width: 28px; height: 28px; border-radius: 50%; background: var(--paper); }
+.panel__stub::before { left: -14px; }
+.panel__stub::after { right: -14px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 24px; }
+

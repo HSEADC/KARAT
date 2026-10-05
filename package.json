@@ -1,0 +1,22 @@
+{
+  "name": "zagran",
+  "version": "1.0.0",
+  "description": "ЗАГРАНЬ — медиа о поступлении в зарубежные вузы",
+  "author": "Кристина Фатикова, Валерия Шиян",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "vite build && vite",
+    "watch": "vite build --watch",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.29",
+    "postcss-nested": "^8.0.1",
+    "postcss-preset-env": "^11.6.0",
+    "vite": "^6.3.5"
+  }
+}

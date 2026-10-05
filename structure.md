@@ -1,0 +1,31 @@
+- index.html
+- /fonts
+- /stylesheets
+  - fonts.css
+  - reset.css
+  - layout.css
+  - style.css
+  - adaptive.css
+- /javascripts
+  - index.js
+  - allStyles.js
+  - app.js
+  - /data
+- /public
+  - favicon.ico
+  - /images
+- /pages
+  - universities.html
+  - university.html
+  - articles.html
+  - article.html
+  - glossary.html
+  - tests.html
+  - compare.html
+  - saved.html
+  - about.html
+  - /articles
+    - free-europe.html
+  - /tests
+    - match.html
+    - quiz.html
