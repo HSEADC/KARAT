@@ -29,7 +29,7 @@
   --gutter: 40px;
 }
 
-/* ---------- typography ---------- */
+/* ---------- типографика ---------- */
 .h1 { font: 500 44px/1.15 var(--font-head); letter-spacing: -0.03em; margin: 0; }
 .h2 { font: 500 28px/1.2 var(--font-head); letter-spacing: -0.02em; margin: 0; }
 .h3 { font: 400 20px/1.3 var(--font-head); letter-spacing: -0.01em; margin: 0; }
@@ -43,7 +43,7 @@
 .link { text-decoration: underline; text-underline-offset: 3px; }
 .link:hover { color: var(--cherry); }
 
-/* ---------- buttons ---------- */
+/* ---------- кнопки ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   padding: 14px 22px; border: 0; border-radius: var(--r-m);
@@ -66,7 +66,7 @@
 .badge { position: absolute; top: -2px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--cherry); color: var(--paper); font: 600 11px/18px var(--font-ui); text-align: center; }
 .badge:empty, .badge[data-count="0"] { display: none; }
 
-/* ---------- header ---------- */
+/* ---------- шапка ---------- */
 .header { position: sticky; top: 0; z-index: 50; background: var(--paper); border-bottom: 1px solid var(--subtle); }
 .header__inner { display: flex; align-items: center; gap: 40px; height: 76px; }
 .logo { display: inline-flex; color: var(--ink); }
@@ -77,11 +77,11 @@
 .nav a.is-active { color: var(--cherry); border-color: var(--cherry); }
 .header__tools { display: flex; align-items: center; gap: 14px; }
 
-/* ---------- barcode ---------- */
+/* ---------- штрихкод ---------- */
 .barcode { display: block; color: var(--ink); }
 .barcode--light { color: var(--paper); }
 
-/* ---------- ticket: photo ---------- */
+/* ---------- билет: фото ---------- */
 .tphoto { position: relative; display: grid; grid-template-columns: 1fr var(--stub, 110px); border-radius: var(--r-xl); overflow: hidden; background: var(--raised); }
 .tphoto__img { position: relative; min-height: 100%; background: var(--sunken) center/cover no-repeat; }
 .tphoto__stub { position: relative; display: flex; align-items: center; justify-content: center; border-left: 1.5px dashed var(--ink); }
@@ -95,7 +95,7 @@
 .credit { position: absolute; left: 12px; bottom: 12px; padding: 4px 8px; border-radius: 6px; background: rgba(23,17,15,.72); color: var(--paper); font: 500 10px/1.3 var(--font-mono); letter-spacing: .02em; max-width: 80%; opacity: 0; transition: opacity .2s; }
 .tphoto:hover .credit, .ticket:hover .credit { opacity: 1; }
 
-/* ---------- ticket: university card ---------- */
+/* ---------- билет: карточка вуза ---------- */
 .ticket { position: relative; display: flex; flex-direction: column; background: var(--raised); border-radius: var(--r-l); overflow: hidden; outline: 2px solid transparent; transition: outline-color .15s, transform .15s; }
 .ticket:hover { transform: translateY(-2px); }
 .ticket.is-saved { outline-color: var(--cherry); }
@@ -119,7 +119,7 @@
 .toggle-save:hover { background: var(--sunken); }
 .toggle-save.is-on svg path { fill: var(--cherry); stroke: var(--cherry); }
 
-/* row layout */
+/* строкой */
 .ticket--row { flex-direction: row; min-height: 168px; }
 .ticket--row .ticket__main { flex: 1; flex-direction: row; gap: 22px; align-items: center; }
 .ticket--row .ticket__photo { width: 200px; aspect-ratio: auto; height: 136px; flex: none; }
@@ -131,7 +131,7 @@
 .tag { padding: 4px 9px; border-radius: 6px; background: var(--paper); font: 500 12px/1.3 var(--font-ui); }
 .tag--accent { background: var(--tint); color: var(--cherry); }
 
-/* ---------- dark ticket band (numbers) ---------- */
+/* ---------- тёмная лента с цифрами ---------- */
 .band { position: relative; display: grid; grid-template-columns: 1fr 130px; background: var(--ink); color: var(--paper); border-radius: var(--r-xl); overflow: hidden; }
 .band__body { display: grid; grid-template-columns: repeat(3, 1fr); padding: 48px 56px; gap: 24px; }
 .band__num { font: 700 120px/0.9 var(--font-num); letter-spacing: -0.02em; }
@@ -142,7 +142,7 @@
 .band__stub::before { top: -14px; }
 .band__stub::after { bottom: -14px; }
 
-/* ---------- promo ticket blocks ---------- */
+/* ---------- промо-билеты ---------- */
 .promo { position: relative; display: grid; grid-template-columns: 1fr 130px; border-radius: var(--r-xl); overflow: hidden; }
 .promo__body { padding: 40px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
 .promo--accent { background: var(--cherry); color: var(--paper); }
@@ -156,7 +156,7 @@
 .promo--accent .btn--secondary, .promo--dark .btn--secondary { background: var(--paper); }
 .promo--accent .btn--secondary:hover { background: var(--ink); color: var(--paper); }
 
-/* ---------- forms ---------- */
+/* ---------- формы ---------- */
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field__label { font-size: 13px; color: var(--graphite); }
 .select, .input {
@@ -185,7 +185,7 @@
 .range { width: 100%; accent-color: var(--cherry); }
 .range-value { display: flex; justify-content: space-between; font: 400 13px/1 var(--font-mono); color: var(--graphite); }
 
-/* ---------- lists ---------- */
+/* ---------- списки ---------- */
 .rowlist { display: flex; flex-direction: column; }
 .rowlist__item { display: flex; align-items: center; gap: 24px; padding: 22px 0; border-top: 1px solid var(--subtle); transition: background .15s, padding .15s; border-radius: 0; }
 .rowlist__item:last-child { border-bottom: 1px solid var(--subtle); }
@@ -195,7 +195,7 @@
 .rowlist__thumb { width: 0; height: 64px; border-radius: var(--r-m); background: center/cover; transition: width .2s; }
 .rowlist__item:hover .rowlist__thumb { width: 96px; }
 
-/* ---------- article cards ---------- */
+/* ---------- карточки статей ---------- */
 .acard { display: flex; flex-direction: column; gap: 12px; }
 .acard__photo { border-radius: var(--r-l); background: var(--sunken) center/cover; aspect-ratio: 16/10; }
 .acard:hover .h3, .acard:hover .h2 { color: var(--cherry); }
@@ -208,7 +208,7 @@
 .navlist a:hover, .navlist button:hover { background: var(--sunken); }
 .navlist .is-active { background: var(--paper); color: var(--cherry); }
 
-/* ---------- article page ---------- */
+/* ---------- страница статьи ---------- */
 .prose { max-width: 680px; font-size: 18px; line-height: 1.65; }
 .prose h2 { font: 500 26px/1.25 var(--font-head); letter-spacing: -0.02em; margin: 48px 0 16px; }
 .prose p { margin: 0 0 18px; }
@@ -227,7 +227,7 @@
 .sources { font-size: 14px; color: var(--graphite); }
 .sources a { text-decoration: underline; word-break: break-all; }
 
-/* ---------- glossary ---------- */
+/* ---------- словарь ---------- */
 .alphabet { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 .alphabet button { aspect-ratio: 1; border: 0; border-radius: var(--r-s); background: var(--paper); font: 500 15px/1 var(--font-ui); }
 .alphabet button:hover { background: var(--sunken); }
@@ -244,7 +244,7 @@
 .termcard[open] .termcard__toggle::before { content: "–"; color: var(--cherry); }
 .termcard__body { padding: 0 28px 26px 356px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; font-size: 15px; }
 
-/* ---------- quiz ---------- */
+/* ---------- тесты ---------- */
 .steps { display: flex; flex-direction: column; gap: 4px; }
 .steps li { list-style: none; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--r-m); font-size: 15px; }
 .steps li.is-current { background: var(--paper); color: var(--cherry); }
@@ -269,7 +269,7 @@
 .reason { padding: 6px 12px; border-radius: 8px; background: var(--paper); font-size: 13px; }
 .reason--no { background: var(--tint); color: var(--cherry); }
 
-/* ---------- compare ---------- */
+/* ---------- сравнение ---------- */
 .cmp-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .cmp-row { border-radius: var(--r-l); background: var(--raised); padding: 20px 24px 24px; }
 .cmp-row:nth-child(even) { background: var(--paper); outline: 1px solid var(--subtle); outline-offset: -1px; }
@@ -281,7 +281,7 @@
 .bar span.is-best { background: var(--cherry); }
 .empty { padding: 48px; border-radius: var(--r-xl); background: var(--raised); text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; }
 
-/* ---------- compare tray ---------- */
+/* ---------- панель сравнения ---------- */
 .tray { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 140%); width: min(1360px, calc(100% - 80px)); z-index: 60; display: flex; align-items: center; gap: 16px; padding: 14px 16px 14px 28px; border-radius: var(--r-xl); background: var(--ink); color: var(--paper); transition: transform .25s; box-shadow: 0 10px 40px rgba(23,17,15,.25); }
 .tray.is-visible { transform: translate(-50%, 0); }
 .tray__label { font: 500 13px/1.3 var(--font-ui); color: var(--graphite-light); min-width: 110px; }
@@ -290,7 +290,7 @@
 .tray__slot--empty { background: none; border: 1.5px dashed #4a3f3b; color: var(--graphite-light); }
 .tray__slot button { background: none; border: 0; color: var(--paper); padding: 2px; }
 
-/* ---------- search overlay ---------- */
+/* ---------- окно поиска ---------- */
 .overlay { position: fixed; inset: 0; z-index: 100; background: rgba(23,17,15,.5); display: none; justify-content: center; align-items: flex-start; padding-top: 96px; }
 .overlay.is-open { display: flex; }
 .overlay__box { width: 760px; max-height: 70vh; overflow: auto; background: var(--paper); border-radius: var(--r-xl); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
@@ -298,11 +298,11 @@
 .overlay__results a:hover, .overlay__results a.is-focus { background: var(--raised); }
 .overlay__group { font: 500 12px/1 var(--font-ui); color: var(--graphite); padding: 10px 14px 4px; }
 
-/* ---------- toast ---------- */
+/* ---------- уведомление ---------- */
 .toast { position: fixed; right: 24px; top: 92px; z-index: 120; padding: 14px 18px; border-radius: var(--r-m); background: var(--ink); color: var(--paper); font-size: 14px; transform: translateY(-12px); opacity: 0; transition: .2s; pointer-events: none; }
 .toast.is-visible { transform: none; opacity: 1; }
 
-/* ---------- footer ---------- */
+/* ---------- подвал ---------- */
 .footer { position: relative; margin-top: 40px; background: var(--ink); color: var(--paper); padding: 48px 0 32px; }
 .footer::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 14px; background: radial-gradient(circle at 14px 0, var(--paper) 7px, transparent 7.5px) 0 0/28px 14px repeat-x; }
 .footer__top { display: flex; align-items: center; gap: 40px; }
@@ -315,7 +315,7 @@
 .footer__form button { border: 0; background: var(--cherry); color: var(--paper); border-radius: 8px; padding: 10px 14px; }
 .footer__bottom { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-top: 32px; padding-top: 20px; border-top: 1px solid #3B302C; font-size: 13px; color: var(--graphite-light); }
 
-/* ---------- misc ---------- */
+/* ---------- разное ---------- */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grid-2 > *, .grid-3 > *, .grid-4 > * { min-width: 0; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -338,7 +338,7 @@
 .page-section { padding: 0 0 72px; }
 .is-hidden { display: none !important; }
 
-/* ---------- additions for the coded site ---------- */
+/* ---------- дополнения ---------- */
 .ticket__data dd.ticket__dl { font: 500 15px/1.1 var(--font-ui); }
 .ticket .tags:empty { display: none; }
 .panel--scroll { max-height: calc(100vh - 132px); overflow-y: auto; scrollbar-width: thin; }
@@ -437,7 +437,7 @@ body.has-tray { padding-bottom: 100px; }
 .about-side .tphoto__stub p { margin: 0; font: 400 19px/1.4 var(--font-head); letter-spacing: -0.01em; }
 
 /* =========================================================
-   ANIMATIONS
+   АНИМАЦИИ
    ========================================================= */
 @view-transition { navigation: auto; }
 .header { view-transition-name: site-header; }
@@ -446,16 +446,16 @@ body.has-tray { padding-bottom: 100px; }
 @keyframes vt-out { to { opacity: 0; transform: translateY(-6px); } }
 @keyframes vt-in { from { opacity: 0; transform: translateY(10px); } }
 
-/* scroll reveal */
+/* появление при прокрутке */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(.2,.7,.2,1) var(--d, 0s), transform .7s cubic-bezier(.2,.7,.2,1) var(--d, 0s); }
 .reveal.is-in { opacity: 1; transform: none; }
 
-/* barcodes draw in */
+/* штрихкоды прорисовываются */
 .reveal .barcode, .hero .barcode, .panel .barcode { clip-path: inset(0 100% 0 0); transition: clip-path 1.1s cubic-bezier(.6,0,.2,1) calc(var(--d, 0s) + .25s); }
 .reveal .barcode--v, .hero .barcode--v { clip-path: inset(0 0 100% 0); }
 .reveal.is-in .barcode, .is-ready .hero .barcode, .is-ready .panel .barcode { clip-path: inset(0); }
 
-/* hero: photos print in, stubs slide, title rises */
+/* первый экран: фото проявляются, корешки выезжают, заголовок поднимается */
 @keyframes print-in { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
 @keyframes stub-in { from { opacity: 0; transform: translateX(40px) rotate(4deg); } to { opacity: 1; transform: none; } }
 @keyframes stub-in-v { from { opacity: 0; transform: translateY(30px) rotate(-3deg); } to { opacity: 1; transform: none; } }
@@ -474,7 +474,7 @@ body.has-tray { padding-bottom: 100px; }
 .art-head .tphoto__img { animation: print-in 1.1s cubic-bezier(.65,0,.2,1) .25s both; }
 .split > .panel { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
 
-/* tickets tear a little on hover */
+/* билеты чуть надрываются при наведении */
 .tphoto__stub, .ticket__stub, .band__stub, .promo__stub, .test-card__body { transition: transform .35s cubic-bezier(.2,.7,.2,1); transform-origin: left top; }
 a.tphoto:hover .tphoto__stub, .tphoto:hover .tphoto__stub { transform: translateX(6px) rotate(1.2deg); }
 .tphoto--v:hover .tphoto__stub { transform: translateY(5px) rotate(-1deg); }
@@ -485,12 +485,12 @@ a.tphoto:hover .tphoto__stub, .tphoto:hover .tphoto__stub { transform: translate
 .ticket__photo, .acard__photo, .test-card__img { transition: filter .3s; }
 .ticket:hover .ticket__photo, .acard:hover .acard__photo, .test-card:hover .test-card__img { filter: saturate(1.15) contrast(1.04); }
 
-/* split-flap numbers */
+/* перелистывающиеся цифры */
 .flap { display: inline-block; font-variant-numeric: tabular-nums; }
 .flap.is-flipping { animation: flap .08s steps(2) infinite; }
 @keyframes flap { 50% { transform: scaleY(.86); } }
 
-/* quiz */
+/* тесты */
 @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: none; opacity: 1; } }
 .quiz-card h1, .quiz-card .muted { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
 .quiz-card .option { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
@@ -509,7 +509,7 @@ a.tphoto:hover .tphoto__stub, .tphoto:hover .tphoto__stub { transform: translate
 .ielts-big { display: inline-block; }
 .ielts-big.bump { animation: pop .35s cubic-bezier(.2,.7,.2,1); }
 
-/* glossary + misc */
+/* словарь и разное */
 .termcard[open] .termcard__body { animation: rise .4s cubic-bezier(.2,.7,.2,1) both; }
 .chip, .btn, .icon-btn, .toggle-save { transition: background .15s, color .15s, transform .15s; }
 .toggle-save.is-on svg { animation: pop .4s cubic-bezier(.2,.7,.2,1); }

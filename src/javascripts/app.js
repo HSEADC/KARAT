@@ -11,8 +11,7 @@ const artById = Object.fromEntries(ARTICLES.map(a => [a.id, a]));
 const termByKey = {};
 TERMS.forEach(t => { termByKey[t.id] = t; if (t.alias) termByKey[t.alias] = t; });
 
-/* ---------- helpers ---------- */
-// статья-пример лежит отдельным HTML-файлом, остальные открываются через шаблон article.html
+/* ---------- вспомогательные функции ---------- */
 // статья-пример лежит отдельным файлом в pages/articles/, остальные открываются через шаблон pages/article.html
 const STATIC_ARTICLES = ["free-europe"];
 const artHref = id => STATIC_ARTICLES.includes(id) ? `${ROOT}pages/articles/${id}.html` : `${url("article.html")}?id=${id}`;
@@ -22,7 +21,7 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&a
 const params = new URLSearchParams(location.search);
 // страницы лежат на разной глубине (index.html, pages/, pages/articles/), поэтому пути считаем от корня сайта
 const ROOT = document.body.dataset.root || "";
-const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "article-free-europe.html": "pages/articles/free-europe.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "compare.html": "pages/compare.html", "saved.html": "pages/saved.html", "about.html": "pages/about.html"};
+const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "compare.html": "pages/compare.html", "saved.html": "pages/saved.html", "about.html": "pages/about.html"};
 const url = file => ROOT + (PAGES[file] || file);
 const nbsp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 const fee = u => u.feeYear == null ? "см. сайт" : u.feeYear <= 1000 ? (u.feeYear === 0 ? "€0" : "≈ €" + nbsp(u.feeYear)) : "≈ €" + nbsp(Math.round(u.feeYear / 100) * 100);
@@ -38,7 +37,7 @@ const uniCredit = u => u.photo ? `Фото: ${u.photo.author}, ${u.photo.license
 const fmtDate = d => new Date(d).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
 const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20) ? b : c; };
 
-/* ---------- storage ---------- */
+/* ---------- хранилище ---------- */
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem("zagran:" + k)) || []; } catch (e) { return []; } },
   set(k, v) { try { localStorage.setItem("zagran:" + k, JSON.stringify(v)); } catch (e) {} },
@@ -51,7 +50,7 @@ const store = {
   }
 };
 
-/* ---------- icons (рисованные линии) ---------- */
+/* ---------- иконки (рисованные линии) ---------- */
 const ICONS = {
   search: '<path d="M10.6 4.2c3.6-.2 6.4 2.6 6.3 6.2-.1 3.4-2.9 6.1-6.3 6.1-3.5 0-6.3-2.8-6.2-6.3.1-3.3 2.8-5.9 6.2-6z" /><path d="M15.4 15.3c1.5 1.4 2.9 2.9 4.4 4.4" />',
   heart: '<path d="M12 19.6c-3.3-2.4-7.6-5.6-7.9-9.4-.2-2.8 1.8-4.9 4.2-4.8 1.6.1 2.9 1 3.7 2.4.8-1.5 2.2-2.4 3.8-2.4 2.4 0 4.3 2.1 4.1 4.8-.3 3.8-4.6 7-7.9 9.4z" />',
@@ -65,7 +64,7 @@ const ICONS = {
 };
 const icon = (n, cls = "icon") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
 
-/* ---------- barcode ---------- */
+/* ---------- штрихкод ---------- */
 function barcode(seed, w = 64, h = 160, vertical = true, light = false) {
   let x = 0, s = 0; for (const c of String(seed)) s = (s * 31 + c.charCodeAt(0)) >>> 0;
   const rnd = () => (s = (s * 1103515245 + 12345) >>> 0) / 4294967296;
@@ -81,10 +80,10 @@ function barcode(seed, w = 64, h = 160, vertical = true, light = false) {
   return vertical ? svg + barcode(seed + "m", Math.min(220, h), 36, false, light).replace('class="barcode', 'class="barcode barcode--m') : svg;
 }
 
-/* ---------- logo ---------- */
+/* ---------- логотип ---------- */
 const LOGO = window.LOGO_SVG || '<span style="font:900 24px/1 Golos Text">ЗАГРАНЬ</span>';
 
-/* ---------- header & footer ---------- */
+/* ---------- шапка и подвал ---------- */
 const NAV = [
   ["universities.html", "Вузы", ["universities", "university"]],
   ["articles.html", "Статьи", ["articles", "article"]],
@@ -172,7 +171,7 @@ function toast(msg) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("is-visible"), 2200);
 }
 
-/* ---------- compare tray ---------- */
+/* ---------- панель сравнения ---------- */
 function renderTray() {
   const tray = $(".tray"); if (!tray) return;
   const list = store.get("compare");
@@ -189,7 +188,7 @@ function renderTray() {
   tray.classList.add("is-visible");
 }
 
-/* ---------- university ticket ---------- */
+/* ---------- билет вуза ---------- */
 function ticket(u, row = false) {
   const saved = store.has("unis", u.id), cmp = store.has("compare", u.id);
   const data = `<dl class="ticket__data">
@@ -231,7 +230,7 @@ function refreshTickets() {
   updateBadges();
 }
 
-/* ---------- global events ---------- */
+/* ---------- общие события ---------- */
 document.addEventListener("click", e => {
   const save = e.target.closest("[data-save]");
   if (save) {
@@ -265,13 +264,13 @@ document.addEventListener("submit", e => {
   inp.value = ""; toast("Готово — первое письмо придёт в пятницу");
 });
 
-/* ---------- mobile menu ---------- */
+/* ---------- мобильное меню ---------- */
 function setMenu(open) {
   document.body.classList.toggle("menu-open", open);
   const b = $(".burger"); if (b) b.setAttribute("aria-expanded", String(open));
 }
 
-/* ---------- search ---------- */
+/* ---------- поиск ---------- */
 function openSearch() {
   const o = $("[data-overlay]"); o.classList.add("is-open");
   const i = $("[data-search-input]"); i.value = ""; renderSearch(""); setTimeout(() => i.focus(), 10);
@@ -305,7 +304,7 @@ document.addEventListener("keydown", e => {
   }
 });
 
-/* ---------- term tooltips ---------- */
+/* ---------- подсказки к терминам ---------- */
 function enhanceTerms(root) {
   $$(".term", root).forEach(el => {
     const t = termByKey[el.dataset.term]; if (!t) return;
@@ -315,7 +314,7 @@ function enhanceTerms(root) {
   });
 }
 
-/* ---------- reusable blocks ---------- */
+/* ---------- общие блоки ---------- */
 const photoTicket = (img, inner, stub, cls = "", credit = "") =>
   `<div class="tphoto ${cls}"><div class="tphoto__img" style="background-image:url(${img})">${inner || ""}${credit ? `<span class="credit">${esc(credit)}</span>` : ""}</div><div class="tphoto__stub">${stub || ""}</div></div>`;
 const articleRow = a => `<a class="rowlist__item" href="${artHref(a.id)}">
@@ -329,7 +328,7 @@ const articleCard = (a, big) => `<a class="acard" href="${artHref(a.id)}">
   <h3 class="${big ? "h2" : "h3"}">${esc(a.title)}</h3></a>`;
 
 /* =====================================================================
-   PAGES
+   СТРАНИЦЫ
    ===================================================================== */
 const pages = {};
 
@@ -841,7 +840,7 @@ pages.about = () => {
 };
 
 
-/* ---------- animations ---------- */
+/* ---------- анимации ---------- */
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function countUp(els) {
   if (reduced) return;
@@ -888,11 +887,11 @@ function initAnimations() {
   const check = () => { const lim = innerHeight * 0.95; $$(".reveal:not(.is-in)").forEach(el => { if (el.getBoundingClientRect().top < lim) show(el); }); };
   addEventListener("scroll", check, { passive: true });
   addEventListener("resize", check);
-  // numbers visible right away still flip
+  // цифры, видные сразу, тоже перелистываются
   $$(".band").filter(b => !b.classList.contains("reveal")).forEach(b => $$(".band__num", b).forEach(splitFlap));
 }
 
-/* ---------- boot ---------- */
+/* ---------- запуск ---------- */
 renderChrome();
 if (pages[page]) pages[page]();
 refreshTickets();

@@ -1,7 +1,4 @@
 /* Адаптив: ноутбук ≤1279, планшет 701–1100 (Figma 768), телефон ≤700 (Figma 414) */
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
 .mobile-only { display: none !important; }
 .barcode--m { display: none; }
 .btn--ink { background: var(--ink); color: var(--paper); }
@@ -11,7 +8,7 @@
 .mnav, .sheet-backdrop { display: none; }
 .badge--inline { position: static; margin-left: 12px; vertical-align: middle; }
 
-/* ---------- tablet / small laptop ---------- */
+/* ---------- планшет и небольшой ноутбук ---------- */
 @media (max-width: 1279px) {
   :root { --gutter: 28px; }
   .hero { grid-template-columns: 1.6fr 1fr; }
@@ -35,7 +32,7 @@
 }
 
 
-/* ---------- tablet (Figma 768) ---------- */
+/* ---------- планшет (Figma 768) ---------- */
 @media (min-width: 701px) and (max-width: 1100px) {
   :root { --gutter: 32px; }
   .desktop-only { display: none !important; }
@@ -45,7 +42,7 @@
   .section-head .h1 { font-size: 32px; }
   .page-section { padding-bottom: 48px; }
 
-  /* header + menu */
+  /* шапка и меню */
   .header__inner { height: 72px; gap: 16px; justify-content: space-between; }
   .nav { display: none; }
   .header__tools { gap: 10px; }
@@ -61,7 +58,7 @@
   .mnav__btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .mnav__search { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 18px 20px; border: 0; border-radius: var(--r-l); background: var(--ink-2); color: var(--paper); font-size: 16px; text-align: left; }
 
-  /* home */
+  /* главная */
   .hero { grid-template-columns: 1fr; height: auto; padding-top: 24px; }
   .hero__left { height: 500px; }
   .hero__left .tphoto__caption { padding: 140px 32px 32px; }
@@ -82,14 +79,14 @@
   .mosaic .stack .acard__photo { aspect-ratio: auto; height: 84px; border-radius: var(--r-m); grid-row: 1 / 3; }
   .mosaic .stack .acard .h3 { font-size: 15px; }
 
-  /* split layout */
+  /* две колонки */
   .split { grid-template-columns: 1fr; gap: 24px; padding: 20px 0 64px; }
   .split__main { gap: 48px; }
   .panel { position: static; border-radius: var(--r-l); }
   .panel .h1 { font-size: 36px; }
   body[data-page="match"] .split > .panel { display: none; }
 
-  /* catalog: filter sheet + 2 columns */
+  /* каталог: фильтры в шторке и 2 колонки */
   .cat-head { display: flex !important; justify-content: space-between; align-items: baseline; }
   .cat-head .h1 { font-size: 44px; }
   .panel--scroll { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 90; max-height: 80vh; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--paper); padding: 12px 32px 0; transform: translateY(105%); transition: transform .3s cubic-bezier(.2,.7,.2,1); box-shadow: 0 -20px 60px rgba(23,17,15,.25); animation: none !important; }
@@ -109,7 +106,7 @@
   .tray { width: calc(100% - 64px); }
   .tray__slot:nth-of-type(4) { display: none; }
 
-  /* university: panel + photo side by side, rest full width */
+  /* вуз: панель и фото рядом, остальное на всю ширину */
   body[data-page="university"] .split { grid-template-columns: 300px 1fr; row-gap: 40px; }
   body[data-page="university"] #uni-main { display: contents; }
   body[data-page="university"] #uni-main > * { grid-column: 1 / -1; }
@@ -118,14 +115,14 @@
   #uni-panel .row.gap-12 { flex-direction: column; align-items: stretch; }
   .uni-photo .tphoto__img { min-height: 300px; }
 
-  /* articles */
+  /* статьи */
   .rowlist__item .rowlist__thumb { width: 110px; height: 80px; }
   .rowlist__item:hover { padding-left: 0; padding-right: 0; background: none; }
   .tphoto--hero { height: 420px; }
   .tphoto--hero .tphoto__caption .h1 { font-size: 30px; }
   body[data-page="articles"] .row.between { flex-direction: column; align-items: flex-start; gap: 16px; }
 
-  /* article */
+  /* статья */
   .art-title { font-size: 38px; }
   .art-photo { height: 380px; }
   body[data-page="article"] .panel { gap: 14px; padding-bottom: 0; }
@@ -134,14 +131,14 @@
   .prose { max-width: 640px; }
   .term__tip { left: auto; right: -20px; }
 
-  /* glossary */
+  /* словарь */
   .alphabet { display: flex; flex-wrap: wrap; gap: 6px; }
   .alphabet button { flex: 0 0 48px; height: 40px; aspect-ratio: auto; }
   .termcard summary { grid-template-columns: 200px 1fr 28px; gap: 24px; padding: 22px 24px; }
   .termcard__term { font-size: 34px; }
   .termcard__body { grid-template-columns: 1fr; padding: 0 24px 22px 248px; gap: 14px; }
 
-  /* tests + quizzes */
+  /* тесты */
   .test-card { grid-template-rows: 220px auto; min-width: 0; }
   .test-card__body { flex-direction: column; align-items: flex-start; }
   .quiz-card { min-height: 0; }
@@ -152,17 +149,17 @@
   body[data-page="quiz"] .navlist a { white-space: nowrap; background: var(--paper); }
   .result__photo { width: 150px; height: 100px; }
 
-  /* about */
+  /* о нас */
   .about-hero { grid-template-columns: 1fr 260px; height: 460px; }
   .about-side .tphoto__stub p { font-size: 15px; }
   body[data-page="about"] .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
-  /* footer */
+  /* подвал */
   .footer__top { flex-wrap: wrap; justify-content: space-between; row-gap: 24px; }
   .footer__nav { order: 3; flex: 1 0 100%; }
 }
 
-/* ---------- phone (Figma 414) ---------- */
+/* ---------- телефон (Figma 414) ---------- */
 @media (max-width: 700px) {
   :root { --gutter: 16px; }
   body { font-size: 15px; }
@@ -177,7 +174,7 @@
   .section-head { margin-bottom: 16px; gap: 12px; }
   .section-head .h1 { font-size: 26px; }
 
-  /* header + burger menu */
+  /* шапка и бургер-меню */
   .header__inner { height: 64px; gap: 12px; justify-content: space-between; }
   .logo svg { height: 18px; }
   .nav, .header__cta, .header__tools a[href="saved.html"] { display: none; }
@@ -196,7 +193,7 @@
   .mnav__btns { display: flex; flex-direction: column; gap: 12px; }
   .mnav__search { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border: 0; border-radius: var(--r-l); background: var(--ink-2); color: var(--paper); font-size: 16px; text-align: left; }
 
-  /* tickets become vertical on phones */
+  /* на телефоне билеты становятся вертикальными */
   .tphoto { grid-template-columns: 1fr; grid-template-rows: auto var(--stub-m, 96px); }
   .tphoto__img { min-height: 240px; }
   .tphoto__stub { border-left: 0; border-top: 1.5px dashed var(--ink); justify-content: flex-start; padding: 16px 20px; }
@@ -210,7 +207,7 @@
   .tphoto--hero .tphoto__img { min-height: 340px; }
   .tphoto:has(.tphoto__caption) .credit { display: none; }
 
-  /* home */
+  /* главная */
   .hero { grid-template-columns: 1fr; height: auto; padding-top: 16px; gap: 16px; }
   .hero__left .tphoto__img { min-height: 440px; }
   .hero__left .tphoto__caption { padding: 120px 20px 22px; }
@@ -240,7 +237,7 @@
   .mosaic .stack .acard__photo { aspect-ratio: auto; height: 64px; border-radius: var(--r-m); grid-row: 1 / 3; }
   .mosaic .stack .acard .h3 { font-size: 15px; }
 
-  /* split layout */
+  /* две колонки */
   .split { grid-template-columns: 1fr; gap: 24px; padding: 16px 0 48px; }
   .split__main { gap: 40px; }
   .panel { position: static; padding: 24px 20px 0; border-radius: var(--r-l); }
@@ -248,7 +245,7 @@
   .panel .h1 { font-size: 30px; }
   body[data-page="match"] .split > .panel { display: none; }
 
-  /* catalog: filters as bottom sheet */
+  /* каталог: фильтры в нижней шторке */
   .cat-head { display: flex !important; justify-content: space-between; align-items: baseline; }
   .panel--scroll { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 90; max-height: 86vh; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--paper); padding: 12px 16px 0; transform: translateY(105%); transition: transform .3s cubic-bezier(.2,.7,.2,1); box-shadow: 0 -20px 60px rgba(23,17,15,.25); animation: none !important; }
   body.filters-open { overflow: hidden; }
@@ -275,20 +272,20 @@
   .ticket--row .ticket__stub::after { top: -12px; right: -11px; left: auto; bottom: auto; }
   .ticket:hover, .ticket:hover .ticket__stub { transform: none; }
 
-  /* tray */
+  /* панель сравнения */
   .tray { width: calc(100% - 24px); bottom: 12px; padding: 10px 10px 10px 18px; gap: 10px; }
   .tray__slot { display: none; }
   .tray__label { flex: 1; min-width: 0; }
   body.has-tray { padding-bottom: 88px; }
 
-  /* university */
+  /* вуз */
   .uni-photo { height: auto; }
   .uni-photo .tphoto__img { min-height: 250px; }
   #uni-panel .row.gap-12 { flex-wrap: wrap; }
   #uni-panel .row.gap-12 .btn { flex: 1; }
   .facts div { font-size: 14px; }
 
-  /* articles */
+  /* статьи */
   .rowlist__item { display: grid; grid-template-columns: 1fr 76px; grid-template-rows: auto auto; column-gap: 14px; row-gap: 6px; padding: 16px 0; }
   .rowlist__item:hover { padding-left: 0; padding-right: 0; background: none; }
   .rowlist__meta { width: auto; font-size: 12px; grid-column: 1; }
@@ -300,7 +297,7 @@
   body[data-page="articles"] .row.between { flex-direction: column; align-items: flex-start; gap: 16px; }
   body[data-page="articles"] .row.between > .chips { width: 100%; }
 
-  /* article */
+  /* статья */
   .art-head { padding-top: 20px; gap: 12px; }
   .art-title { font-size: 28px; line-height: 1.15; }
   .art-photo { height: auto; }
@@ -312,7 +309,7 @@
   .prose blockquote { font-size: 19px; }
   .term__tip { width: min(280px, 80vw); }
 
-  /* glossary */
+  /* словарь */
   .alphabet { display: flex; overflow-x: auto; gap: 6px; scrollbar-width: none; }
   .alphabet button { flex: 0 0 38px; height: 38px; aspect-ratio: auto; }
   .termcard summary { grid-template-columns: 1fr 28px; gap: 8px; padding: 18px; }
@@ -321,7 +318,7 @@
   .termcard__ru { font-size: 16px; }
   .termcard__body { grid-template-columns: 1fr; padding: 0 18px 18px; gap: 14px; }
 
-  /* tests + quizzes */
+  /* тесты */
   .test-card { grid-template-rows: 180px auto; }
   .test-card__body { padding: 22px 20px; }
   .quiz-card { min-height: 0; }
@@ -342,7 +339,7 @@
   .ielts-scale { height: 170px; padding: 16px; gap: 8px; }
   .scorebar { grid-template-columns: 110px 1fr 44px; gap: 10px; }
 
-  /* compare */
+  /* сравнение */
   .cmp-cols { gap: 8px; }
   .cmp-row { padding: 14px; }
   .cmp-val { font-size: 15px; }
@@ -352,7 +349,7 @@
   .cmp-add { width: 100%; }
   .empty { padding: 32px 20px; }
 
-  /* about */
+  /* о нас */
   .about-hero { grid-template-columns: 1fr; height: auto; }
   .about-hero > .tphoto:first-child .tphoto__img { min-height: 300px; }
   .about-side { height: auto; --stub-m: auto; }
@@ -362,7 +359,7 @@
   .authors { grid-template-columns: 1fr; }
   .author { min-height: 0; padding: 22px; flex-direction: column; align-items: flex-start; gap: 14px; }
 
-  /* search overlay, footer, toast */
+  /* поиск, подвал, уведомление */
   .overlay { padding: 72px 12px 0; }
   .overlay__box { width: 100%; max-height: 80vh; }
   .footer { padding: 40px 0 28px; }
