@@ -146,14 +146,12 @@
 .promo { position: relative; display: grid; grid-template-columns: 1fr 130px; border-radius: var(--r-xl); overflow: hidden; }
 .promo__body { padding: 40px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
 .promo--accent { background: var(--cherry); color: var(--paper); }
-.promo--dark { background: var(--ink); color: var(--paper); }
-.promo--tint { background: var(--tint); }
 .promo__stub { position: relative; display: flex; align-items: center; justify-content: center; border-left: 1.5px dashed currentColor; }
-.promo--accent .promo__stub, .promo--dark .promo__stub { border-color: rgba(242,237,228,.5); }
+.promo--accent .promo__stub { border-color: rgba(242,237,228,.5); }
 .promo__stub::before, .promo__stub::after { content: ""; position: absolute; left: -14px; width: 28px; height: 28px; border-radius: 50%; background: var(--paper); }
 .promo__stub::before { top: -14px; }
 .promo__stub::after { bottom: -14px; }
-.promo--accent .btn--secondary, .promo--dark .btn--secondary { background: var(--paper); }
+.promo--accent .btn--secondary { background: var(--paper); }
 .promo--accent .btn--secondary:hover { background: var(--ink); color: var(--paper); }
 
 /* ---------- формы ---------- */
@@ -317,15 +315,13 @@
 
 /* ---------- разное ---------- */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.grid-2 > *, .grid-3 > *, .grid-4 > * { min-width: 0; }
+.grid-2 > *, .grid-3 > * { min-width: 0; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .card { border-radius: var(--r-l); background: var(--raised); padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
 .stack { display: flex; flex-direction: column; }
 .gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; } .gap-24 { gap: 24px; } .gap-32 { gap: 32px; }
 .row { display: flex; align-items: center; }
 .between { justify-content: space-between; }
-.wrap { flex-wrap: wrap; }
 .facts { display: flex; flex-direction: column; }
 .facts div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--subtle); font-size: 15px; }
 .facts dt { color: var(--graphite); }
@@ -427,8 +423,6 @@
 
 .authors { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .author { position: relative; border-radius: var(--r-xl); background: var(--raised); padding: 28px; display: flex; justify-content: space-between; align-items: flex-end; min-height: 200px; }
-.credits { columns: 2; column-gap: 32px; font-size: 13px; color: var(--graphite); padding-left: 18px; }
-.credits li { margin-bottom: 6px; break-inside: avoid; }
 body.has-tray { padding-bottom: 100px; }
 
 .about-hero { grid-template-columns: 1fr 440px; height: 600px; padding-top: 0; }

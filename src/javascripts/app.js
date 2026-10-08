@@ -12,9 +12,6 @@ const termByKey = {};
 TERMS.forEach(t => { termByKey[t.id] = t; if (t.alias) termByKey[t.alias] = t; });
 
 /* ---------- вспомогательные функции ---------- */
-// статья-пример лежит отдельным файлом в pages/articles/, остальные открываются через шаблон pages/article.html
-const STATIC_ARTICLES = ["free-europe"];
-const artHref = id => STATIC_ARTICLES.includes(id) ? `${ROOT}pages/articles/${id}.html` : `${url("article.html")}?id=${id}`;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -23,8 +20,13 @@ const params = new URLSearchParams(location.search);
 const ROOT = document.body.dataset.root || "";
 const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "compare.html": "pages/compare.html", "saved.html": "pages/saved.html", "about.html": "pages/about.html"};
 const url = file => ROOT + (PAGES[file] || file);
+// статья-пример лежит отдельным файлом в pages/articles/, остальные открываются через шаблон pages/article.html
+const STATIC_ARTICLES = ["free-europe"];
+const artHref = id => STATIC_ARTICLES.includes(id) ? `${ROOT}pages/articles/${id}.html` : `${url("article.html")}?id=${id}`;
 const nbsp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 const fee = u => u.feeYear == null ? "см. сайт" : u.feeYear <= 1000 ? (u.feeYear === 0 ? "€0" : "≈ €" + nbsp(u.feeYear)) : "≈ €" + nbsp(Math.round(u.feeYear / 100) * 100);
+// «без платы» — только вузы без платы за обучение (остаются взносы); €175 в год во Франции — это уже плата
+const isFree = u => u.feeYear != null && /^Без платы/.test(u.tuition);
 const ielts = u => u.ielts == null ? "—" : u.ielts.toFixed(1);
 const shortDeadline = u => u.deadline.split(/[(;]/)[0].trim().replace(/[,.]$/, "");
 const uniImg = id => `${ROOT}images/unis/${id}.jpg`;
@@ -80,6 +82,9 @@ function barcode(seed, w = 64, h = 160, vertical = true, light = false) {
   return vertical ? svg + barcode(seed + "m", Math.min(220, h), 36, false, light).replace('class="barcode', 'class="barcode barcode--m') : svg;
 }
 
+// штрихкоды-заготовки в HTML: data-barcode="ширина,высота,v|h,l"
+const drawBarcodes = seed => $$("[data-barcode]").forEach(el => { const [w, h, v, l] = el.dataset.barcode.split(","); el.innerHTML = barcode(el.dataset.seed || seed, +w, +h, v === "v", l === "l"); });
+
 /* ---------- логотип ---------- */
 const LOGO = window.LOGO_SVG || '<span style="font:900 24px/1 Golos Text">ЗАГРАНЬ</span>';
 
@@ -130,7 +135,7 @@ function renderChrome() {
       <nav class="footer__nav">${NAV.map(([h, t]) => `<a href="${url(h)}">${t}</a>`).join("")}<a href="https://t.me/zagranmedia" target="_blank" rel="noopener">Telegram ↗</a></nav>
       <form class="footer__form" data-form="subscribe" novalidate>
         <input type="email" placeholder="Почта для рассылки" aria-label="Почта" required>
-        <button type="submit">${icon("arrow")}</button>
+        <button type="submit" aria-label="Подписаться">${icon("arrow")}</button>
       </form>
     </div>
     <div class="footer__bottom">
@@ -184,7 +189,7 @@ function renderTray() {
              : `<div class="tray__slot tray__slot--empty">Добавь ещё вуз</div>`;
   }).join("");
   tray.innerHTML = `<div class="tray__label"><b>${list.length}/3</b>сравнение</div>${slots}
-    <a class="btn btn--primary" href="${url("compare.html")}"${list.length < 2 ? " disabled" : ""}>Сравнить</a>`;
+    <a class="btn btn--primary" href="${url("compare.html")}"${list.length < 2 ? ' disabled aria-disabled="true" tabindex="-1"' : ""}>Сравнить</a>`;
   tray.classList.add("is-visible");
 }
 
@@ -200,7 +205,7 @@ function ticket(u, row = false) {
       <button class="toggle-compare" data-compare="${u.id}">${icon(cmp ? "check" : "plus")}${cmp ? "В сравнении" : "Сравнить"}</button>
       <button class="toggle-save${saved ? " is-on" : ""}" data-save="${u.id}" aria-label="Сохранить">${icon("heart")}</button>
     </div>`;
-  const tags = `<div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${u.feeYear != null && u.feeYear <= 1000 ? '<span class="tag">Без платы</span>' : ""}${u.dirs.slice(0, row ? 3 : 0).map(d => `<span class="tag">${DIRS[d]}</span>`).join("")}</div>`;
+  const tags = `<div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${isFree(u) ? '<span class="tag">Без платы</span>' : ""}${u.dirs.slice(0, row ? 3 : 0).map(d => `<span class="tag">${DIRS[d]}</span>`).join("")}</div>`;
   if (row) return `<article class="ticket ticket--row${saved ? " is-saved" : ""}" data-uni="${u.id}">
     <a class="ticket__main" href="${url("university.html")}?id=${u.id}">
       <div class="ticket__photo" style="background-image:url(${uniImg(u.id)})"></div>
@@ -249,7 +254,8 @@ document.addEventListener("click", e => {
     refreshTickets(); document.dispatchEvent(new Event("zagran:change")); return;
   }
   if (e.target.closest('[data-action="menu"]')) { setMenu(true); return; }
-  if (e.target.closest('[data-action="menu-close"]') || e.target.closest(".mnav__links a")) { setMenu(false); if (!e.target.closest(".mnav__links a")) return; }
+  if (e.target.closest(".mnav__links a")) setMenu(false); // переход по ссылке — меню закрываем, ссылка срабатывает
+  if (e.target.closest('[data-action="menu-close"]')) { setMenu(false); return; }
   if (e.target.closest('[data-action="search"]')) { setMenu(false); openSearch(); return; }
   if (e.target.closest(".filter-open")) { document.body.classList.add("filters-open"); return; }
   if (e.target.closest("[data-filters-close]") || e.target.matches(".sheet-backdrop")) { document.body.classList.remove("filters-open"); return; }
@@ -261,7 +267,7 @@ document.addEventListener("submit", e => {
   e.preventDefault();
   const inp = $("input", e.target);
   if (!/^\S+@\S+\.\S+$/.test(inp.value)) { toast("Проверь почту"); inp.focus(); return; }
-  inp.value = ""; toast("Готово — первое письмо придёт в пятницу");
+  inp.value = ""; toast("Рассылка ещё готовится — новости уже в Telegram");
 });
 
 /* ---------- мобильное меню ---------- */
@@ -339,7 +345,7 @@ pages.home = () => {
   $("#home-unis").innerHTML = pick.map(u => ticket(u)).join("");
   const [first, ...rest] = ARTICLES;
   $("#home-articles").innerHTML = `<div class="mosaic">${articleCard(first, true)}<div class="stack gap-32">${rest.slice(0, 3).map(a => articleCard(a)).join("")}</div></div>`;
-  $$("[data-barcode]").forEach(el => { const [w, h, v, l] = el.dataset.barcode.split(","); el.innerHTML = barcode(el.dataset.seed || "z", +w, +h, v === "v", l === "l"); });
+  drawBarcodes("z");
   const form = $("#matchbar");
   form.addEventListener("submit", e => {
     e.preventDefault();
@@ -365,7 +371,7 @@ pages.universities = () => {
     <details class="filter-group" open><summary>Плата в год</summary>
       <input class="range" type="range" min="0" max="60000" step="1000" value="${st.budget}" name="budget" aria-label="Бюджет в год">
       <div class="range-value"><span>€0</span><span data-budget-out></span></div>
-      <label class="check"><input type="checkbox" name="free"${st.free ? " checked" : ""}><span class="check__label">Без платы за обучение</span><span class="check__count">${count(u => u.feeYear != null && u.feeYear <= 1000)}</span></label>
+      <label class="check"><input type="checkbox" name="free"${st.free ? " checked" : ""}><span class="check__label">Без платы за обучение</span><span class="check__count">${count(isFree)}</span></label>
     </details>
     <details class="filter-group" open><summary>Язык</summary>
       <label class="check"><input type="checkbox" name="english"${st.english ? " checked" : ""}><span class="check__label">Есть программы на английском</span><span class="check__count">${count(u => u.english)}</span></label>
@@ -383,7 +389,7 @@ pages.universities = () => {
       (!st.regions.size || st.regions.has(u.region)) &&
       (!st.dirs.size || [...st.dirs].some(d => u.dirs.includes(d))) &&
       (st.budget >= 60000 || (u.feeYear != null && u.feeYear <= st.budget)) &&
-      (!st.free || (u.feeYear != null && u.feeYear <= 1000)) &&
+      (!st.free || isFree(u)) &&
       (!st.english || u.english) &&
       (!st.ielts || u.ielts == null || u.ielts <= +st.ielts));
     const f = u => u.feeYear == null ? Infinity : u.feeYear;
@@ -391,7 +397,7 @@ pages.universities = () => {
       name: (a, b) => a.name.localeCompare(b.name),
       cheap: (a, b) => f(a) - f(b),
       expensive: (a, b) => (b.feeYear || 0) - (a.feeYear || 0),
-      ielts: (a, b) => (a.ielts || 0) - (b.ielts || 0),
+      ielts: (a, b) => (a.ielts ?? Infinity) - (b.ielts ?? Infinity),
       country: (a, b) => a.country.localeCompare(b.country, "ru") || a.name.localeCompare(b.name)
     };
     list.sort(sorters[st.sort]);
@@ -442,13 +448,17 @@ pages.universities = () => {
 
 /* ---------- страница вуза ---------- */
 pages.university = () => {
-  const u = byId[params.get("id")] || UNIS[0];
+  const u = byId[params.get("id")];
+  if (!u) {
+    $("#uni-panel").innerHTML = `<h1 class="h2">Вуз не найден</h1><p class="muted">Возможно, ссылка устарела</p><a class="btn btn--primary" href="${url("universities.html")}">В каталог</a>`;
+    return;
+  }
   document.title = u.name + " — ЗАГРАНЬ";
   const host = s => { try { return new URL(s).hostname.replace(/^www\./, ""); } catch (e) { return s; } };
   $("#uni-panel").innerHTML = `
     <div class="muted">${esc(u.city)} · ${esc(u.country)}</div>
     <h1 class="h2">${esc(u.name)}</h1>
-    <div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${u.feeYear != null && u.feeYear <= 1000 ? '<span class="tag">Без платы</span>' : ""}</div>
+    <div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${isFree(u) ? '<span class="tag">Без платы</span>' : ""}</div>
     <dl class="facts">
       <div><dt>Плата в год</dt><dd>${fee(u)}</dd></div>
       <div><dt>IELTS</dt><dd>${u.ielts == null ? "по программе" : ielts(u)}</dd></div>
@@ -474,7 +484,7 @@ pages.university = () => {
   $("#uni-main").innerHTML = `
     ${photoTicket(uniImg(u.id), "", barcode(u.id + "v", 44, 300, true), "uni-photo", uniCredit(u))}
     <section class="band band--compact"><div class="band__body">
-      <div><div class="band__num">${u.feeYear == null ? "?" : u.feeYear <= 1000 ? "€0" : "€" + Math.round(u.feeYear / 1000) + "k"}</div><div class="band__label">${u.feeYear != null && u.feeYear <= 1000 ? "плата за обучение" : "плата в год, примерно"}</div></div>
+      <div><div class="band__num">${u.feeYear == null ? "?" : isFree(u) ? "€0" : u.feeYear < 1000 ? "€" + u.feeYear : "€" + Math.round(u.feeYear / 1000) + "k"}</div><div class="band__label">${isFree(u) ? "плата за обучение" : "плата в год, примерно"}</div></div>
       <div><div class="band__num accent">${u.ielts == null ? "—" : ielts(u)}</div><div class="band__label">${u.ielts == null ? "IELTS по программе" : "минимум IELTS"}</div></div>
       <div><div class="band__num band__num--sm">${esc(shortDeadline(u))}</div><div class="band__label">дедлайн</div></div>
     </div><div class="band__stub">${barcode(u.id + "b", 40, 150, true, true)}</div></section>
@@ -511,7 +521,11 @@ pages.articles = () => {
 
 /* ---------- статья ---------- */
 pages.article = () => {
-  const a = artById[params.get("id") || document.body.dataset.article] || ARTICLES[0];
+  const a = artById[params.get("id") || document.body.dataset.article];
+  if (!a) {
+    $("#art-head").innerHTML = `<h1 class="h1">Статья не найдена</h1><p class="lead">Возможно, ссылка устарела</p><a class="btn btn--primary" href="${url("articles.html")}">Все статьи</a>`;
+    return;
+  }
   document.title = a.title + " — ЗАГРАНЬ";
   $("#art-head").innerHTML = `
     <div class="muted">${a.rubric} · ${fmtDate(a.date)} · ${a.read} мин</div>
@@ -535,7 +549,7 @@ pages.article = () => {
   const i = ARTICLES.indexOf(a);
   const next = [1, 2, 3].map(k => ARTICLES[(i + k) % ARTICLES.length]);
   $("#art-next").innerHTML = `<div class="section-head"><h2 class="h2">Читать дальше</h2><a class="btn btn--ghost" href="${url("articles.html")}">Все статьи</a></div><div class="grid-3 gap-24">${next.map(x => articleCard(x)).join("")}</div>`;
-  $("#art-progress-bar") && window.addEventListener("scroll", () => {
+  if ($("#art-progress-bar")) window.addEventListener("scroll", () => {
     const r = prose.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * 0.4 - r.top) / r.height));
     $("#art-progress-bar").style.width = (p * 100) + "%";
   }, { passive: true });
@@ -628,7 +642,7 @@ pages.match = () => {
   };
   const renderResult = () => {
     renderSteps(true);
-    const res = UNIS.map(u => scoreUni(u, ans)).sort((a, b) => b.pct - a.pct || (a.u.feeYear || 99999) - (b.u.feeYear || 99999));
+    const res = UNIS.map(u => scoreUni(u, ans)).sort((a, b) => b.pct - a.pct || (a.u.feeYear ?? Infinity) - (b.u.feeYear ?? Infinity));
     let shown = 10;
     const draw = () => {
       main.innerHTML = `<div class="stack gap-24">
@@ -647,7 +661,7 @@ pages.match = () => {
         ${shown < res.length ? `<button class="btn btn--secondary" data-more>Показать ещё 10</button>` : ""}
       </div>`;
       refreshTickets(); countUp($$(".match", main));
-      $("[data-more]") && $("[data-more]").addEventListener("click", () => { shown += 10; draw(); });
+      $("[data-more]")?.addEventListener("click", () => { shown += 10; draw(); });
     };
     draw();
     const p = new URLSearchParams(ans); p.set("done", 1); history.replaceState(null, "", "?" + p);
@@ -676,7 +690,7 @@ pages.match = () => {
 pages.quiz = () => {
   const id = params.get("id") || "country";
   const main = $("#quiz-main"), side = $("#quiz-side");
-  const titles = { country: "Какая страна — твоя?", ielts: "Хватит ли IELTS 6.5?", foundation: "Foundation или сразу?" };
+  const titles = { country: "Какая страна — твоя?", ielts: "Хватит ли твоего IELTS?", foundation: "Foundation или сразу?" };
   document.title = (titles[id] || titles.country) + " — ЗАГРАНЬ";
   $$("[data-quiz-link]").forEach(a => a.classList.toggle("is-active", a.dataset.quizLink === id));
   $("#quiz-barcode").innerHTML = barcode(id, 240, 44, false);
@@ -769,7 +783,7 @@ pages.quiz = () => {
 
 /* ---------- тесты: хаб ---------- */
 pages.tests = () => {
-  $$("[data-barcode]").forEach(el => { const [w, h, v, l] = el.dataset.barcode.split(","); el.innerHTML = barcode(el.dataset.seed || "t", +w, +h, v === "v", l === "l"); });
+  drawBarcodes("t");
 };
 
 /* ---------- сравнение ---------- */
@@ -782,7 +796,7 @@ pages.compare = () => {
       root.innerHTML = `<div class="empty"><h2 class="h2">Пока пусто</h2><p class="muted">Добавь до трёх вузов из каталога</p><div class="row gap-12"><a class="btn btn--primary" href="${url("universities.html")}">В каталог</a></div>${addSel}</div>`;
       bindAdd(); return;
     }
-    const cols = n => `style="grid-template-columns:repeat(${Math.max(list.length, 1)},1fr)"`;
+    const cols = () => `style="grid-template-columns:repeat(${Math.max(list.length, 1)},1fr)"`;
     const nums = (get, lower = true) => {
       const vals = list.map(get), real = vals.filter(v => v != null);
       const best = real.length > 1 ? (lower ? Math.min(...real) : Math.max(...real)) : null;
@@ -796,8 +810,8 @@ pages.compare = () => {
         <a class="ticket__photo" href="${url("university.html")}?id=${u.id}" aria-label="${esc(u.name)}" style="background-image:url(${uniImg(u.id)})"></a>
         <div class="row between gap-12" style="align-items:flex-start"><div class="stack gap-8"><span class="muted small">${esc(u.city)} · ${esc(u.country)}</span><a class="h3" href="${url("university.html")}?id=${u.id}">${esc(u.name)}</a></div>
         <button class="icon-btn" data-compare="${u.id}" aria-label="Убрать">${icon("close")}</button></div></div>`).join("")}</div>
-      ${row("Плата в год", list.map((u, k) => `<div><div class="cmp-val${feeN.vals[k] != null && feeN.vals[k] === feeN.best ? " is-best" : ""}">${fee(u)}</div><div class="bar"><span class="${feeN.vals[k] === feeN.best ? "is-best" : ""}" style="width:${u.feeYear == null ? 0 : Math.max(3, u.feeYear / feeN.max * 100)}%"></span></div></div>`))}
-      ${row("Минимум IELTS", list.map((u, k) => `<div><div class="cmp-val${ieN.vals[k] != null && ieN.vals[k] === ieN.best ? " is-best" : ""}">${u.ielts == null ? "по программе" : ielts(u)}</div><div class="bar"><span class="${ieN.vals[k] === ieN.best ? "is-best" : ""}" style="width:${u.ielts == null ? 0 : u.ielts / 9 * 100}%"></span></div></div>`))}
+      ${row("Плата в год", list.map((u, k) => `<div><div class="cmp-val${feeN.vals[k] != null && feeN.vals[k] === feeN.best ? " is-best" : ""}">${fee(u)}</div><div class="bar"><span class="${feeN.vals[k] != null && feeN.vals[k] === feeN.best ? "is-best" : ""}" style="width:${u.feeYear == null ? 0 : Math.max(3, u.feeYear / feeN.max * 100)}%"></span></div></div>`))}
+      ${row("Минимум IELTS", list.map((u, k) => `<div><div class="cmp-val${ieN.vals[k] != null && ieN.vals[k] === ieN.best ? " is-best" : ""}">${u.ielts == null ? "по программе" : ielts(u)}</div><div class="bar"><span class="${ieN.vals[k] != null && ieN.vals[k] === ieN.best ? "is-best" : ""}" style="width:${u.ielts == null ? 0 : u.ielts / 9 * 100}%"></span></div></div>`))}
       ${row("Плата подробно", list.map(u => `<div>${esc(u.tuition)}</div>`))}
       ${row("Дедлайн", list.map(u => `<div>${esc(u.deadline)}</div>`))}
       ${row("Язык", list.map(u => `<div>${esc(u.lang)}${u.english ? ' <span class="tag tag--accent">EN</span>' : ""}</div>`))}
@@ -806,8 +820,7 @@ pages.compare = () => {
       ${addSel ? `<div class="row gap-16">${addSel}</div>` : ""}
       <div class="row gap-12"><button class="btn btn--secondary" data-clear>Очистить сравнение</button></div>`;
     bindAdd();
-    const clr = $("[data-clear]");
-    clr && clr.addEventListener("click", () => { store.set("compare", []); updateBadges(); draw(); });
+    $("[data-clear]")?.addEventListener("click", () => { store.set("compare", []); updateBadges(); draw(); });
   };
   const bindAdd = () => {
     const s = $("#cmp-add"); if (!s) return;
@@ -834,7 +847,7 @@ pages.saved = () => {
 
 /* ---------- о медиа ---------- */
 pages.about = () => {
-  $$("[data-barcode]").forEach(el => { const [w, h, v, l] = el.dataset.barcode.split(","); el.innerHTML = barcode(el.dataset.seed || "a", +w, +h, v === "v", l === "l"); });
+  drawBarcodes("a");
   $("#about-count").textContent = UNIS.length;
   $("#about-countries").textContent = new Set(UNIS.map(u => u.country)).size;
 };
