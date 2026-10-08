@@ -92,7 +92,7 @@ window.UNIS = [
     citySize: "big",
     english: false,
     photo: {
-      author: "?",
+      author: "Torinberl",
       license: "CC BY-SA 3.0",
       url: "https://commons.wikimedia.org/wiki/File:Freie_Universitaet_Berlin_-_Campus_-_Blick_vom_Henry-Ford-Bau_zur_Mensa_1_-_mit_Regenbogen.jpg"
     }
@@ -259,7 +259,7 @@ window.UNIS = [
     citySize: "student",
     english: false,
     photo: {
-      author: "?",
+      author: "BlueBreezeWiki",
       license: "CC BY-SA 3.0",
       url: "https://commons.wikimedia.org/wiki/File:Karlsruhe_Universit%C3%A4t_from_Physikhochhaus_pic1_meph666-2005-Feb-10.jpg"
     }
@@ -456,7 +456,7 @@ window.UNIS = [
     citySize: "student",
     english: true,
     photo: {
-      author: "Donald Trung Quoc Don (Chữ Hán: 徵國單) - Wikimedia Commons.(Want to use this image",
+      author: "Donald Trung Quoc Don",
       license: "CC BY-SA 4.0",
       url: "https://commons.wikimedia.org/wiki/File:University_of_Groningen_-_Campus_Frysl%C3%A2n,_Leeuwarden_(2018)_01.jpg"
     }
@@ -774,7 +774,7 @@ window.UNIS = [
     citySize: "student",
     english: true,
     photo: {
-      author: "Twice25 &amp; Rinina25",
+      author: "Twice25 & Rinina25",
       license: "CC BY 2.5",
       url: "https://commons.wikimedia.org/wiki/File:Bologna-Saffi-Universit%C3%A0-DSCF7205.JPG"
     }
@@ -1309,7 +1309,7 @@ window.UNIS = [
     citySize: "student",
     english: true,
     photo: {
-      author: "This image is a work by Mercy.\nWhen reusing, please credit me as: Mercy from Wik",
+      author: "Mercy",
       license: "CC BY-SA 3.0",
       url: "https://commons.wikimedia.org/wiki/File:Building_in_Udolni_street,_Brno.jpg"
     }
