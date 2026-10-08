@@ -38,7 +38,7 @@ const chunksByFile = Object.fromEntries(
 function pageChunksPlugin() {
   return {
     name: 'page-chunks',
-    // order: 'pre' — теги добавляются до обработки HTML, поэтому Vite собирает эти скрипты в билд
+    // 'pre', иначе vite не собирает эти скрипты
     transformIndexHtml: {
       order: 'pre',
       handler(html, ctx) {
@@ -64,7 +64,7 @@ function pageChunksPlugin() {
 
 export default defineConfig(({ command }) => ({
   root,
-  // относительные пути: собранный сайт открывается из любой папки и на GitHub Pages
+  // относительные пути для github pages
   base: command === 'build' ? './' : '/',
   plugins: [pageChunksPlugin()],
   build: {

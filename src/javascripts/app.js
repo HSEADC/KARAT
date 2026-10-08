@@ -1,4 +1,4 @@
-/* ЗАГРАНЬ — общий скрипт: шапка, подвал, хранилище, билеты, поиск, страницы */
+// ЗАГРАНЬ: общий скрипт для всех страниц
 (function () {
 "use strict";
 
@@ -16,16 +16,16 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const params = new URLSearchParams(location.search);
-// страницы лежат на разной глубине (index.html, pages/, pages/articles/), поэтому пути считаем от корня сайта
+// пути считаем от корня сайта
 const ROOT = document.body.dataset.root || "";
 const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "compare.html": "pages/compare.html", "saved.html": "pages/saved.html", "about.html": "pages/about.html"};
 const url = file => ROOT + (PAGES[file] || file);
-// статья-пример лежит отдельным файлом в pages/articles/, остальные открываются через шаблон pages/article.html
+// пример статьи лежит отдельным файлом
 const STATIC_ARTICLES = ["free-europe"];
 const artHref = id => STATIC_ARTICLES.includes(id) ? `${ROOT}pages/articles/${id}.html` : `${url("article.html")}?id=${id}`;
 const nbsp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 const fee = u => u.feeYear == null ? "см. сайт" : u.feeYear <= 1000 ? (u.feeYear === 0 ? "€0" : "≈ €" + nbsp(u.feeYear)) : "≈ €" + nbsp(Math.round(u.feeYear / 100) * 100);
-// «без платы» — только вузы без платы за обучение (остаются взносы); €175 в год во Франции — это уже плата
+// без платы = нет платы за обучение, только взносы
 const isFree = u => u.feeYear != null && /^Без платы/.test(u.tuition);
 const ielts = u => u.ielts == null ? "—" : u.ielts.toFixed(1);
 const shortDeadline = u => u.deadline.split(/[(;]/)[0].trim().replace(/[,.]$/, "");
@@ -78,11 +78,11 @@ function barcode(seed, w = 64, h = 160, vertical = true, light = false) {
     x += b + g;
   }
   const svg = `<svg class="barcode${vertical ? " barcode--v" : ""}${light ? " barcode--light" : ""}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="currentColor" aria-hidden="true">${bars}</svg>`;
-  // на телефоне корешки горизонтальные — отдаём горизонтальный двойник
+  // для телефона ещё горизонтальный вариант
   return vertical ? svg + barcode(seed + "m", Math.min(220, h), 36, false, light).replace('class="barcode', 'class="barcode barcode--m') : svg;
 }
 
-// штрихкоды-заготовки в HTML: data-barcode="ширина,высота,v|h,l"
+// штрихкоды из data-barcode="ширина,высота,v,l"
 const drawBarcodes = seed => $$("[data-barcode]").forEach(el => { const [w, h, v, l] = el.dataset.barcode.split(","); el.innerHTML = barcode(el.dataset.seed || seed, +w, +h, v === "v", l === "l"); });
 
 /* ---------- логотип ---------- */
@@ -100,7 +100,7 @@ const NAV = [
 const page = document.body.dataset.page;
 
 function renderChrome() {
-  // шапка и подвал уже прописаны в HTML (ссылки видны без JS); строим их только если их нет
+  // если шапки нет в html, собираем её тут
   let header = $(".header");
   if (!header) {
   header = document.createElement("header");
@@ -254,7 +254,7 @@ document.addEventListener("click", e => {
     refreshTickets(); document.dispatchEvent(new Event("zagran:change")); return;
   }
   if (e.target.closest('[data-action="menu"]')) { setMenu(true); return; }
-  if (e.target.closest(".mnav__links a")) setMenu(false); // переход по ссылке — меню закрываем, ссылка срабатывает
+  if (e.target.closest(".mnav__links a")) setMenu(false);
   if (e.target.closest('[data-action="menu-close"]')) { setMenu(false); return; }
   if (e.target.closest('[data-action="search"]')) { setMenu(false); openSearch(); return; }
   if (e.target.closest(".filter-open")) { document.body.classList.add("filters-open"); return; }
@@ -333,9 +333,7 @@ const articleCard = (a, big) => `<a class="acard" href="${artHref(a.id)}">
   <span class="muted small">${a.rubric} · ${a.read} мин</span>
   <h3 class="${big ? "h2" : "h3"}">${esc(a.title)}</h3></a>`;
 
-/* =====================================================================
-   СТРАНИЦЫ
-   ===================================================================== */
+/* ---------- страницы ---------- */
 const pages = {};
 
 /* ---------- главная ---------- */
@@ -896,11 +894,11 @@ function initAnimations() {
     el.style.setProperty("--d", (Math.min(sibs.indexOf(el), 5) * 0.07) + "s");
     el.classList.add("reveal"); io.observe(el);
   });
-  // запасной вариант: проверка при прокрутке
+  // ещё проверяем при скролле
   const check = () => { const lim = innerHeight * 0.95; $$(".reveal:not(.is-in)").forEach(el => { if (el.getBoundingClientRect().top < lim) show(el); }); };
   addEventListener("scroll", check, { passive: true });
   addEventListener("resize", check);
-  // цифры, видные сразу, тоже перелистываются
+  // цифры на первом экране тоже анимируем
   $$(".band").filter(b => !b.classList.contains("reveal")).forEach(b => $$(".band__num", b).forEach(splitFlap));
 }
 

@@ -1,4 +1,4 @@
-// Точка входа: данные кладут объекты в window, поэтому подключаем их до app.js
+// сначала данные, потом основной скрипт
 import './data/logo.js'
 import './data/unis.js'
 import './data/articles.js'
