@@ -1,4 +1,4 @@
-/* Адаптив: ноутбук ≤1279, планшет 701–1100 (Figma 768), телефон ≤700 (Figma 414) */
+/* адаптив: ноутбук до 1279, планшет 701-1100, телефон до 700 */
 .mobile-only { display: none !important; }
 .barcode--m { display: none; }
 .btn--ink { background: var(--ink); color: var(--paper); }
@@ -32,7 +32,7 @@
 }
 
 
-/* ---------- планшет (Figma 768) ---------- */
+/* ---------- планшет ---------- */
 @media (min-width: 701px) and (max-width: 1100px) {
   :root { --gutter: 32px; }
   .desktop-only { display: none !important; }
@@ -106,7 +106,7 @@
   .tray { width: calc(100% - 64px); }
   .tray__slot:nth-of-type(4) { display: none; }
 
-  /* вуз: панель и фото рядом, остальное на всю ширину */
+  /* вуз */
   body[data-page="university"] .split { grid-template-columns: 300px 1fr; row-gap: 40px; }
   body[data-page="university"] #uni-main { display: contents; }
   body[data-page="university"] #uni-main > * { grid-column: 1 / -1; }
@@ -159,7 +159,7 @@
   .footer__nav { order: 3; flex: 1 0 100%; }
 }
 
-/* ---------- телефон (Figma 414) ---------- */
+/* ---------- телефон ---------- */
 @media (max-width: 700px) {
   :root { --gutter: 16px; }
   body { font-size: 15px; }
@@ -193,7 +193,7 @@
   .mnav__btns { display: flex; flex-direction: column; gap: 12px; }
   .mnav__search { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border: 0; border-radius: var(--r-l); background: var(--ink-2); color: var(--paper); font-size: 16px; text-align: left; }
 
-  /* на телефоне билеты становятся вертикальными */
+  /* билеты вертикальные */
   .tphoto { grid-template-columns: 1fr; grid-template-rows: auto var(--stub-m, 96px); }
   .tphoto__img { min-height: 240px; }
   .tphoto__stub { border-left: 0; border-top: 1.5px dashed var(--ink); justify-content: flex-start; padding: 16px 20px; }

@@ -1,4 +1,4 @@
-/* Шрифты подключены локально (файлы в src/fonts), кириллица и латиница */
+/* шрифты лежат локально в src/fonts */
 @font-face {
   font-family: 'Golos Text';
   src: url('../fonts/golos-text-cyrillic.woff2') format('woff2');

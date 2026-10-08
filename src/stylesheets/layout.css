@@ -1,7 +1,7 @@
-/* Каркас: контейнер и двухколоночная раскладка */
+/* контейнер и колонки */
 .container { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
 
-/* ---------- две колонки: панель и контент ---------- */
+/* две колонки: панель и контент */
 .split { display: grid; grid-template-columns: 400px 1fr; gap: 40px; padding: 32px 0 96px; align-items: start; }
 .split__main { display: flex; flex-direction: column; gap: 64px; min-width: 0; }
 .panel {
