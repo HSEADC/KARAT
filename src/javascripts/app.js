@@ -127,7 +127,7 @@ function renderChrome() {
   footer.innerHTML = `<div class="container">
     <div class="footer__top">
       <a class="logo" href="${url("index.html")}" aria-label="ЗАГРАНЬ">${LOGO}</a>
-      <nav class="footer__nav">${NAV.map(([h, t]) => `<a href="${url(h)}">${t}</a>`).join("")}</nav>
+      <nav class="footer__nav">${NAV.map(([h, t]) => `<a href="${url(h)}">${t}</a>`).join("")}<a href="https://t.me/zagranmedia" target="_blank" rel="noopener">Telegram ↗</a></nav>
       <form class="footer__form" data-form="subscribe" novalidate>
         <input type="email" placeholder="Почта для рассылки" aria-label="Почта" required>
         <button type="submit">${icon("arrow")}</button>
