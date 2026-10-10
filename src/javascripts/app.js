@@ -20,6 +20,7 @@ const params = new URLSearchParams(location.search);
 const ROOT = document.body.dataset.root || "";
 const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "compare.html": "pages/compare.html", "saved.html": "pages/saved.html", "about.html": "pages/about.html"};
 const url = file => ROOT + (PAGES[file] || file);
+const FORM_URL = "https://formspree.io/f/mppqrdqz";
 // пример статьи лежит отдельным файлом
 const STATIC_ARTICLES = ["free-europe"];
 const artHref = id => STATIC_ARTICLES.includes(id) ? `${ROOT}pages/articles/${id}.html` : `${url("article.html")}?id=${id}`;
@@ -133,8 +134,8 @@ function renderChrome() {
     <div class="footer__top">
       <a class="logo" href="${url("index.html")}" aria-label="ЗАГРАНЬ">${LOGO}</a>
       <nav class="footer__nav">${NAV.map(([h, t]) => `<a href="${url(h)}">${t}</a>`).join("")}<a href="https://t.me/zagranmedia" target="_blank" rel="noopener">Telegram ↗</a></nav>
-      <form class="footer__form" data-form="subscribe" novalidate>
-        <input type="email" placeholder="Почта для рассылки" aria-label="Почта" required>
+      <form class="footer__form" data-form="subscribe" action="${FORM_URL}" method="POST" novalidate>
+        <input type="email" name="email" placeholder="Почта для рассылки" aria-label="Почта" required>
         <button type="submit" aria-label="Подписаться">${icon("arrow")}</button>
       </form>
     </div>
@@ -262,12 +263,22 @@ document.addEventListener("click", e => {
   if (e.target.matches("[data-overlay]")) closeSearch();
 });
 
-document.addEventListener("submit", e => {
+// подписка через formspree
+document.addEventListener("submit", async e => {
   if (e.target.dataset.form !== "subscribe") return;
   e.preventDefault();
-  const inp = $("input", e.target);
+  const form = e.target, inp = $("input", form), btn = $("button", form);
   if (!/^\S+@\S+\.\S+$/.test(inp.value)) { toast("Проверь почту"); inp.focus(); return; }
-  inp.value = ""; toast("Рассылка ещё готовится — новости уже в Telegram");
+  btn.disabled = true;
+  try {
+    const res = await fetch(FORM_URL, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) });
+    if (!res.ok) throw new Error(res.status);
+    form.reset();
+    toast("Спасибо! Подписка оформлена");
+  } catch (err) {
+    toast("Не получилось отправить, попробуй ещё раз");
+  }
+  btn.disabled = false;
 });
 
 /* ---------- мобильное меню ---------- */
