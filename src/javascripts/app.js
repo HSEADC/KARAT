@@ -18,7 +18,7 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&a
 const params = new URLSearchParams(location.search);
 // пути считаем от корня сайта
 const ROOT = document.body.dataset.root || "";
-const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "compare.html": "pages/compare.html", "saved.html": "pages/saved.html", "about.html": "pages/about.html"};
+const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "about.html": "pages/about.html", "russia.html": "pages/russia.html", "soon.html": "pages/soon.html"};
 const url = file => ROOT + (PAGES[file] || file);
 const FORM_URL = "https://formspree.io/f/mppqrdqz";
 // пример статьи лежит отдельным файлом
@@ -40,30 +40,12 @@ const uniCredit = u => u.photo ? `Фото: ${u.photo.author}, ${u.photo.license
 const fmtDate = d => new Date(d).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
 const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20) ? b : c; };
 
-/* ---------- хранилище ---------- */
-const store = {
-  get(k) { try { return JSON.parse(localStorage.getItem("zagran:" + k)) || []; } catch (e) { return []; } },
-  set(k, v) { try { localStorage.setItem("zagran:" + k, JSON.stringify(v)); } catch (e) {} },
-  has(k, id) { return this.get(k).includes(id); },
-  toggle(k, id, max) {
-    const list = this.get(k); const i = list.indexOf(id);
-    if (i >= 0) list.splice(i, 1);
-    else { if (max && list.length >= max) return null; list.push(id); }
-    this.set(k, list); return i < 0;
-  }
-};
-
 /* ---------- иконки (рисованные линии) ---------- */
 const ICONS = {
   search: '<path d="M10.6 4.2c3.6-.2 6.4 2.6 6.3 6.2-.1 3.4-2.9 6.1-6.3 6.1-3.5 0-6.3-2.8-6.2-6.3.1-3.3 2.8-5.9 6.2-6z" /><path d="M15.4 15.3c1.5 1.4 2.9 2.9 4.4 4.4" />',
-  heart: '<path d="M12 19.6c-3.3-2.4-7.6-5.6-7.9-9.4-.2-2.8 1.8-4.9 4.2-4.8 1.6.1 2.9 1 3.7 2.4.8-1.5 2.2-2.4 3.8-2.4 2.4 0 4.3 2.1 4.1 4.8-.3 3.8-4.6 7-7.9 9.4z" />',
-  compare: '<path d="M7.2 4.6c0 4.9.1 9.9-.1 14.8M16.9 4.7c0 4.9-.1 9.8 0 14.7M3.7 8.2c1.2-1.2 2.3-2.3 3.5-3.6 1.2 1.3 2.3 2.4 3.4 3.5M13.4 15.9c1.2 1.2 2.3 2.4 3.5 3.5 1.1-1.1 2.3-2.3 3.4-3.4" />',
   arrow: '<path d="M4.4 12.1c4.9-.1 9.9 0 14.9-.1M13.6 6.4c1.9 1.9 3.8 3.8 5.7 5.7-1.9 1.9-3.8 3.8-5.6 5.6" />',
   back: '<path d="M19.6 12.1c-4.9-.1-9.9 0-14.9-.1M10.4 6.4C8.5 8.3 6.6 10.2 4.7 12.1c1.9 1.9 3.8 3.8 5.6 5.6" />',
   close: '<path d="M6 6.2c4 3.9 8 7.8 11.9 11.8M18 6.1c-4 4-7.9 7.9-11.9 11.9" />',
-  plus: '<path d="M12 5c.1 4.7 0 9.4 0 14M5 12.1c4.7-.1 9.3 0 14 0" />',
-  check: '<path d="M5 12.6c1.6 1.6 3.3 3.2 4.9 4.9 3-3.6 6-7.3 9.1-10.9" />',
-  ext: '<path d="M13.5 4.6h5.9v5.8M19.3 4.7c-3.6 3.6-7.2 7.2-10.7 10.7M10.4 5.3H5.1v13.6h13.6v-5.3" />'
 };
 const icon = (n, cls = "icon") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
 
@@ -92,15 +74,17 @@ const LOGO = window.LOGO_SVG || '<span style="font:900 24px/1 Golos Text">ЗАГ
 /* ---------- шапка и подвал ---------- */
 const NAV = [
   ["universities.html", "Вузы", ["universities", "university"]],
+  ["russia.html", "Из России", ["russia"]],
   ["articles.html", "Статьи", ["articles", "article"]],
   ["glossary.html", "Словарь", ["glossary"]],
   ["tests.html", "Тесты", ["tests", "match", "quiz"]],
-  ["compare.html", "Сравнение", ["compare"]],
-  ["about.html", "О нас", ["about"]]
+  ["about.html", "О проекте", ["about"]]
 ];
 const page = document.body.dataset.page;
 
 function renderChrome() {
+  // на заглушке нет шапки и меню, нужно только уведомление для формы
+  if (page === "soon") { const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); document.body.append(t); return; }
   // если шапки нет в html, собираем её тут
   let header = $(".header");
   if (!header) {
@@ -111,8 +95,6 @@ function renderChrome() {
     <nav class="nav">${NAV.map(([h, t, p]) => `<a href="${url(h)}"${p.includes(page) ? ' class="is-active"' : ""}>${t}</a>`).join("")}</nav>
     <div class="header__tools">
       <button class="icon-btn" data-action="search" aria-label="Поиск">${icon("search")}</button>
-      <a class="icon-btn" href="${url("compare.html")}" aria-label="Сравнение">${icon("compare")}<span class="badge" data-badge="compare"></span></a>
-      <a class="icon-btn" href="${url("saved.html")}" aria-label="Сохранённое">${icon("heart")}<span class="badge" data-badge="saved"></span></a>
       <a class="btn btn--primary header__cta" href="${url("match.html")}">Подобрать вуз</a>
       <button class="icon-btn burger" data-action="menu" aria-label="Меню" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17"/></svg></button>
     </div></div>`;
@@ -122,8 +104,8 @@ function renderChrome() {
   mnav.className = "mnav"; mnav.setAttribute("data-mnav", "");
   mnav.innerHTML = `<div class="mnav__top"><a class="logo" href="${url("index.html")}" aria-label="ЗАГРАНЬ">${LOGO}</a>
       <button class="icon-btn" data-action="menu-close" aria-label="Закрыть меню">${icon("close")}</button></div>
-    <nav class="mnav__links">${NAV.map(([h, t, p]) => `<a href="${url(h)}"${p.includes(page) ? ' class="is-active"' : ""}>${t}${h === "compare.html" ? '<span class="badge badge--inline" data-badge="compare"></span>' : ""}</a>`).join("")}</nav>
-    <div class="mnav__btns"><a class="btn btn--primary btn--block" href="${url("match.html")}">Подобрать вуз</a><a class="btn btn--paper btn--block" href="${url("saved.html")}">Сохранённое</a>
+    <nav class="mnav__links">${NAV.map(([h, t, p]) => `<a href="${url(h)}"${p.includes(page) ? ' class="is-active"' : ""}>${t}</a>`).join("")}</nav>
+    <div class="mnav__btns"><a class="btn btn--primary btn--block" href="${url("match.html")}">Подобрать вуз</a>
       <button class="mnav__search" data-action="search">${icon("search")}<span>Вуз, город или термин</span></button></div>`;
   header.after(mnav);
 
@@ -148,7 +130,6 @@ function renderChrome() {
 
   const extra = document.createElement("div");
   extra.innerHTML = `
-    <div class="tray" aria-live="polite"></div>
     <div class="overlay" data-overlay>
       <div class="overlay__box" role="dialog" aria-label="Поиск">
         <label class="search">${icon("search")}<input type="search" placeholder="Вуз, город, статья или термин" data-search-input></label>
@@ -158,16 +139,6 @@ function renderChrome() {
     <div class="toast" role="status"></div>
     <div class="sheet-backdrop"></div>`;
   document.body.append(...extra.children);
-  updateBadges();
-}
-
-function updateBadges() {
-  $$("[data-badge]").forEach(b => {
-    const n = b.dataset.badge === "saved" ? store.get("unis").length + store.get("articles").length : store.get("compare").length;
-    if (b.dataset.count !== undefined && +b.dataset.count !== n) { b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); }
-    b.textContent = n || ""; b.dataset.count = n;
-  });
-  renderTray();
 }
 
 let toastTimer;
@@ -177,83 +148,31 @@ function toast(msg) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("is-visible"), 2200);
 }
 
-/* ---------- панель сравнения ---------- */
-function renderTray() {
-  const tray = $(".tray"); if (!tray) return;
-  const list = store.get("compare");
-  const show = list.length && page !== "compare";
-  document.body.classList.toggle("has-tray", !!show);
-  if (!show) { tray.classList.remove("is-visible"); return; }
-  const slots = [0, 1, 2].map(i => {
-    const u = byId[list[i]];
-    return u ? `<div class="tray__slot"><span>${esc(u.name)}</span><button data-compare="${u.id}" aria-label="Убрать">${icon("close")}</button></div>`
-             : `<div class="tray__slot tray__slot--empty">Добавь ещё вуз</div>`;
-  }).join("");
-  tray.innerHTML = `<div class="tray__label"><b>${list.length}/3</b>сравнение</div>${slots}
-    <a class="btn btn--primary" href="${url("compare.html")}"${list.length < 2 ? ' disabled aria-disabled="true" tabindex="-1"' : ""}>Сравнить</a>`;
-  tray.classList.add("is-visible");
-}
-
 /* ---------- билет вуза ---------- */
 function ticket(u, row = false) {
-  const saved = store.has("unis", u.id), cmp = store.has("compare", u.id);
   const data = `<dl class="ticket__data">
       <div><dt>Плата в год</dt><dd>${fee(u)}</dd></div>
       <div><dt>IELTS</dt><dd>${ielts(u)}</dd></div>
       ${row ? `<div><dt>Дедлайн</dt><dd class="ticket__dl">${esc(shortDeadline(u))}</dd></div>` : ""}
     </dl>`;
-  const actions = `<div class="ticket__actions">
-      <button class="toggle-compare" data-compare="${u.id}">${icon(cmp ? "check" : "plus")}${cmp ? "В сравнении" : "Сравнить"}</button>
-      <button class="toggle-save${saved ? " is-on" : ""}" data-save="${u.id}" aria-label="Сохранить">${icon("heart")}</button>
-    </div>`;
   const tags = `<div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${isFree(u) ? '<span class="tag">Без платы</span>' : ""}${u.dirs.slice(0, row ? 3 : 0).map(d => `<span class="tag">${DIRS[d]}</span>`).join("")}</div>`;
-  if (row) return `<article class="ticket ticket--row${saved ? " is-saved" : ""}" data-uni="${u.id}">
+  if (row) return `<article class="ticket ticket--row" data-uni="${u.id}">
     <a class="ticket__main" href="${url("university.html")}?id=${u.id}">
       <div class="ticket__photo" style="background-image:url(${uniImg(u.id)})"></div>
       <div class="ticket__info"><div class="ticket__city">${esc(u.city)} · ${esc(u.country)}</div><h3 class="ticket__name">${esc(u.name)}</h3>${tags}</div>
     </a>
-    <div class="ticket__stub">${data}${actions}</div></article>`;
-  return `<article class="ticket${saved ? " is-saved" : ""}" data-uni="${u.id}">
+    <div class="ticket__stub">${data}</div></article>`;
+  return `<article class="ticket" data-uni="${u.id}">
     <a class="ticket__main" href="${url("university.html")}?id=${u.id}">
       <div class="ticket__top"><span>${esc(u.country)}</span><span>${esc(u.city)}</span></div>
       <div class="ticket__photo" style="background-image:url(${uniImg(u.id)})"><span class="credit">${esc(uniCredit(u))}</span></div>
       <h3 class="ticket__name">${esc(u.name)}</h3>${tags}
     </a>
-    <div class="ticket__stub">${data}${actions}</div></article>`;
-}
-
-function refreshTickets() {
-  $$("[data-uni]").forEach(el => {
-    const id = el.dataset.uni;
-    el.classList.toggle("is-saved", store.has("unis", id));
-  });
-  $$("[data-save]").forEach(b => b.classList.toggle("is-on", store.has(b.dataset.saveKind || "unis", b.dataset.save)));
-  $$(".toggle-compare[data-compare]").forEach(b => {
-    const on = store.has("compare", b.dataset.compare);
-    b.innerHTML = icon(on ? "check" : "plus") + (on ? "В сравнении" : "Сравнить");
-  });
-  $$("[data-save-label]").forEach(b => { b.lastChild.textContent = store.has(b.dataset.saveKind || "unis", b.dataset.save) ? "Сохранено" : "Сохранить"; });
-  updateBadges();
+    <div class="ticket__stub">${data}</div></article>`;
 }
 
 /* ---------- общие события ---------- */
 document.addEventListener("click", e => {
-  const save = e.target.closest("[data-save]");
-  if (save) {
-    e.preventDefault();
-    const kind = save.dataset.saveKind || "unis";
-    const on = store.toggle(kind, save.dataset.save);
-    toast(on ? "Сохранено" : "Убрано из сохранённого");
-    refreshTickets(); document.dispatchEvent(new Event("zagran:change")); return;
-  }
-  const cmp = e.target.closest("[data-compare]");
-  if (cmp) {
-    e.preventDefault();
-    const on = store.toggle("compare", cmp.dataset.compare, 3);
-    if (on === null) toast("Сравнивать можно до трёх вузов");
-    else toast(on ? "Добавлено в сравнение" : "Убрано из сравнения");
-    refreshTickets(); document.dispatchEvent(new Event("zagran:change")); return;
-  }
   if (e.target.closest('[data-action="menu"]')) { setMenu(true); return; }
   if (e.target.closest(".mnav__links a")) setMenu(false);
   if (e.target.closest('[data-action="menu-close"]')) { setMenu(false); return; }
@@ -384,7 +303,7 @@ pages.universities = () => {
     </details>
     <details class="filter-group" open><summary>Язык</summary>
       <label class="check"><input type="checkbox" name="english"${st.english ? " checked" : ""}><span class="check__label">Есть программы на английском</span><span class="check__count">${count(u => u.english)}</span></label>
-      <div class="field" style="margin-top:8px"><span class="field__label">Мой IELTS</span>
+      <div class="field" style="margin-top:8px"><span class="field__label">Мой IELTS</span><a class="link small" href="${url("russia.html")}#exams" style="margin-bottom:4px">IELTS в России не сдать — где сдать?</a>
         <select class="select" name="ielts" aria-label="Балл IELTS"><option value="">Не важно</option>${["5.5", "6", "6.5", "7", "7.5"].map(v => `<option value="${v}"${st.ielts === v ? " selected" : ""}>${(+v).toFixed(1)}</option>`).join("")}</select></div>
     </details>
     <details class="filter-group"${st.countries.size ? " open" : ""}><summary>Страна</summary>${checks("country", countries.map(c => [c, c, count(u => u.country === c)]), st.countries)}</details>`;
@@ -473,19 +392,10 @@ pages.university = () => {
       <div><dt>IELTS</dt><dd>${u.ielts == null ? "по программе" : ielts(u)}</dd></div>
       <div><dt>Язык</dt><dd>${esc(u.lang)}</dd></div>
     </dl>
-    <div class="row gap-12">
-      <button class="btn btn--primary toggle-compare-btn" data-compare="${u.id}">${icon("compare")}<span></span></button>
-      <button class="btn btn--secondary" data-save="${u.id}" data-save-label>${icon("heart")}<span>Сохранить</span></button>
-    </div>
     <div class="panel__stub row between">
       <a class="link" href="${esc(u.src[0])}" target="_blank" rel="noopener">${esc(host(u.src[0]))}</a>
       ${barcode(u.id, 120, 40, false)}
     </div>`;
-  const syncBtn = () => {
-    const b = $(".toggle-compare-btn span"); if (b) b.textContent = store.has("compare", u.id) ? "В сравнении" : "Сравнить";
-    const s = $("[data-save-label] span"); if (s) s.textContent = store.has("unis", u.id) ? "Сохранено" : "Сохранить";
-  };
-  document.addEventListener("zagran:change", syncBtn); syncBtn();
 
   const mentions = ARTICLES.filter(a => a.unis.includes(u.id));
   const similar = UNIS.filter(x => x.id !== u.id && (x.country === u.country || x.region === u.region) && x.dirs.some(d => u.dirs.includes(d)))
@@ -562,7 +472,6 @@ pages.article = () => {
     const r = prose.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * 0.4 - r.top) / r.height));
     $("#art-progress-bar").style.width = (p * 100) + "%";
   }, { passive: true });
-  refreshTickets();
 };
 
 /* ---------- словарь ---------- */
@@ -656,20 +565,20 @@ pages.match = () => {
     const draw = () => {
       main.innerHTML = `<div class="stack gap-24">
         <div class="row between"><div class="stack gap-8"><div class="muted">Готово</div><h1 class="h1">Твои вузы</h1></div>
-          <div class="row gap-12"><button class="btn btn--secondary" data-restart>Пройти заново</button><a class="btn btn--primary" href="${url("compare.html")}">Сравнить</a></div></div>
+          <div class="row gap-12"><button class="btn btn--secondary" data-restart>Пройти заново</button></div></div>
         ${res.slice(0, shown).map(r => `<article class="result">
           <div class="result__top">
             <div class="match${r.pct < 75 ? " match--mid" : ""}">${r.pct}%</div>
             <a class="result__photo" href="${url("university.html")}?id=${r.u.id}" style="background-image:url(${uniImg(r.u.id)})"></a>
             <div class="stack gap-8" style="flex:1;min-width:0"><span class="muted small">${esc(r.u.city)} · ${esc(r.u.country)}</span><a class="h3" href="${url("university.html")}?id=${r.u.id}">${esc(r.u.name)}</a>
               <div class="row gap-24 small"><span>Плата: <b>${fee(r.u)}</b></span><span>IELTS: <b>${ielts(r.u)}</b></span></div></div>
-            <div class="stack gap-8" style="align-items:flex-end"><button class="toggle-compare" data-compare="${r.u.id}"></button><button class="toggle-save" data-save="${r.u.id}" aria-label="Сохранить">${icon("heart")}</button></div>
+            
           </div>
           <div class="tags">${r.reasons.map(([ok, t]) => `<span class="reason${ok ? "" : " reason--no"}">${ok ? "✓" : "✕"} ${esc(t)}</span>`).join("")}</div>
         </article>`).join("")}
         ${shown < res.length ? `<button class="btn btn--secondary" data-more>Показать ещё 10</button>` : ""}
       </div>`;
-      refreshTickets(); countUp($$(".match", main));
+      countUp($$(".match", main));
       $("[data-more]")?.addEventListener("click", () => { shown += 10; draw(); });
     };
     draw();
@@ -699,7 +608,7 @@ pages.match = () => {
 pages.quiz = () => {
   const id = params.get("id") || "country";
   const main = $("#quiz-main"), side = $("#quiz-side");
-  const titles = { country: "Какая страна — твоя?", ielts: "Хватит ли твоего IELTS?", foundation: "Foundation или сразу?" };
+  const titles = { country: "Какая страна — твоя?", ielts: "Хватит ли английского?", foundation: "Foundation или сразу?" };
   document.title = (titles[id] || titles.country) + " — ЗАГРАНЬ";
   $$("[data-quiz-link]").forEach(a => a.classList.toggle("is-active", a.dataset.quizLink === id));
   $("#quiz-barcode").innerHTML = barcode(id, 240, 44, false);
@@ -730,9 +639,8 @@ pages.quiz = () => {
         <div class="stack gap-8"><div class="ielts-scale">${SCALE.map(v => { const n = withNum.filter(u => u.ielts === v).length, mx = Math.max(...SCALE.map(x => withNum.filter(u => u.ielts === x).length)); return `<div class="${v <= score ? "is-ok" : ""}"><span style="height:${Math.max(8, Math.round(n / mx * 130))}px"></span><b>${v.toFixed(1)}</b><small>${n} ${plural(n, "вуз", "вуза", "вузов")}</small></div>`; }).join("")}</div></div>
         ${near.length ? `<section class="stack gap-16"><h2 class="h2">Чуть-чуть не хватает</h2><div class="grid-3">${near.map(u => ticket(u)).join("")}</div></section>` : ""}
         ${ok.length ? `<section class="stack gap-16"><h2 class="h2">Хватает</h2><div class="stack gap-16">${ok.map(u => ticket(u, true)).join("")}</div></section>` : ""}
-        <div class="tip">Минимум по каждой части тоже важен — часто это 6.0. <a class="link" href="${url("article.html")}?id=ielts">Читать про IELTS</a></div>
+        <div class="tip">IELTS в России не проводят: где сейчас сдать экзамен — <a class="link" href="${url("russia.html")}#exams">в разделе «Из России»</a>. Минимум по каждой части тоже важен — часто это 6.0. <a class="link" href="${url("article.html")}?id=ielts">Читать про IELTS</a></div>
       </div>`;
-      refreshTickets();
     };
     $("#ielts-range").addEventListener("input", e => { score = +e.target.value; draw(); });
     side.addEventListener("click", e => { const b = e.target.closest("[data-score]"); if (b) { score = +b.dataset.score; draw(); } });
@@ -795,64 +703,8 @@ pages.tests = () => {
   drawBarcodes("t");
 };
 
-/* ---------- сравнение ---------- */
-pages.compare = () => {
-  const root = $("#cmp");
-  const draw = () => {
-    const list = store.get("compare").map(id => byId[id]).filter(Boolean);
-    const addSel = list.length < 3 ? `<div class="cmp-add"><select class="select" id="cmp-add"><option value="">Добавить вуз…</option>${UNIS.filter(u => !list.includes(u)).sort((a, b) => a.name.localeCompare(b.name)).map(u => `<option value="${u.id}">${esc(u.name)} — ${esc(u.city)}</option>`).join("")}</select></div>` : "";
-    if (!list.length) {
-      root.innerHTML = `<div class="empty"><h2 class="h2">Пока пусто</h2><p class="muted">Добавь до трёх вузов из каталога</p><div class="row gap-12"><a class="btn btn--primary" href="${url("universities.html")}">В каталог</a></div>${addSel}</div>`;
-      bindAdd(); return;
-    }
-    const cols = () => `style="grid-template-columns:repeat(${Math.max(list.length, 1)},1fr)"`;
-    const nums = (get, lower = true) => {
-      const vals = list.map(get), real = vals.filter(v => v != null);
-      const best = real.length > 1 ? (lower ? Math.min(...real) : Math.max(...real)) : null;
-      const max = Math.max(...real, 1);
-      return { vals, best, max };
-    };
-    const feeN = nums(u => u.feeYear), ieN = nums(u => u.ielts);
-    const row = (label, cells) => `<div class="cmp-row"><div class="cmp-row__label">${label}</div><div class="cmp-cols" ${cols()}>${cells.join("")}</div></div>`;
-    root.innerHTML = `
-      <div class="cmp-cols cmp-head" ${cols()}>${list.map(u => `<div class="cmp-uni">
-        <a class="ticket__photo" href="${url("university.html")}?id=${u.id}" aria-label="${esc(u.name)}" style="background-image:url(${uniImg(u.id)})"></a>
-        <div class="row between gap-12" style="align-items:flex-start"><div class="stack gap-8"><span class="muted small">${esc(u.city)} · ${esc(u.country)}</span><a class="h3" href="${url("university.html")}?id=${u.id}">${esc(u.name)}</a></div>
-        <button class="icon-btn" data-compare="${u.id}" aria-label="Убрать">${icon("close")}</button></div></div>`).join("")}</div>
-      ${row("Плата в год", list.map((u, k) => `<div><div class="cmp-val${feeN.vals[k] != null && feeN.vals[k] === feeN.best ? " is-best" : ""}">${fee(u)}</div><div class="bar"><span class="${feeN.vals[k] != null && feeN.vals[k] === feeN.best ? "is-best" : ""}" style="width:${u.feeYear == null ? 0 : Math.max(3, u.feeYear / feeN.max * 100)}%"></span></div></div>`))}
-      ${row("Минимум IELTS", list.map((u, k) => `<div><div class="cmp-val${ieN.vals[k] != null && ieN.vals[k] === ieN.best ? " is-best" : ""}">${u.ielts == null ? "по программе" : ielts(u)}</div><div class="bar"><span class="${ieN.vals[k] != null && ieN.vals[k] === ieN.best ? "is-best" : ""}" style="width:${u.ielts == null ? 0 : u.ielts / 9 * 100}%"></span></div></div>`))}
-      ${row("Плата подробно", list.map(u => `<div>${esc(u.tuition)}</div>`))}
-      ${row("Дедлайн", list.map(u => `<div>${esc(u.deadline)}</div>`))}
-      ${row("Язык", list.map(u => `<div>${esc(u.lang)}${u.english ? ' <span class="tag tag--accent">EN</span>' : ""}</div>`))}
-      ${row("Направления", list.map(u => `<div class="tags">${u.dirs.map(d => `<span class="tag">${DIRS[d]}</span>`).join("")}</div>`))}
-      ${row("Город", list.map(u => `<div>${esc(u.city)} · ${u.citySize === "big" ? "большой" : "студенческий"}</div>`))}
-      ${addSel ? `<div class="row gap-16">${addSel}</div>` : ""}
-      <div class="row gap-12"><button class="btn btn--secondary" data-clear>Очистить сравнение</button></div>`;
-    bindAdd();
-    $("[data-clear]")?.addEventListener("click", () => { store.set("compare", []); updateBadges(); draw(); });
-  };
-  const bindAdd = () => {
-    const s = $("#cmp-add"); if (!s) return;
-    s.addEventListener("change", () => { if (s.value) { store.toggle("compare", s.value, 3); updateBadges(); draw(); } });
-  };
-  document.addEventListener("zagran:change", draw);
-  draw();
-};
-
-/* ---------- сохранённое ---------- */
-pages.saved = () => {
-  const draw = () => {
-    const unis = store.get("unis").map(id => byId[id]).filter(Boolean);
-    const arts = store.get("articles").map(id => artById[id]).filter(Boolean);
-    $("#saved-unis").innerHTML = unis.length ? `<div class="grid-3">${unis.map(u => ticket(u)).join("")}</div>`
-      : `<div class="empty"><h3 class="h3">Нет сохранённых вузов</h3><a class="btn btn--primary" href="${url("universities.html")}">В каталог</a></div>`;
-    $("#saved-arts").innerHTML = arts.length ? `<div class="rowlist">${arts.map(articleRow).join("")}</div>`
-      : `<div class="empty"><h3 class="h3">Нет сохранённых статей</h3><a class="btn btn--primary" href="${url("articles.html")}">К статьям</a></div>`;
-    $("#saved-count").textContent = unis.length + arts.length;
-  };
-  document.addEventListener("zagran:change", draw);
-  draw();
-};
+/* ---------- заглушка ---------- */
+pages.soon = () => drawBarcodes("s");
 
 /* ---------- о медиа ---------- */
 pages.about = () => {
@@ -891,8 +743,8 @@ function splitFlap(el) {
 function initAnimations() {
   requestAnimationFrame(() => document.body.classList.add("is-ready"));
   if (reduced || !("IntersectionObserver" in window)) return;
-  const sel = ".section-head, .ticket, .acard, .rowlist__item, .band, .promo, .card, .termcard, .test-card, .cmp-row, .cmp-uni, .author, .empty, .tip, .lead-story, .prose > *, .ielts-scale, .scorebar, #art-unis, #art-next, .uni-photo, .art-photo";
-  const els = $$(sel).filter(el => !el.closest(".hero, .art-head, .tray, .overlay, .panel") && el.getBoundingClientRect().top > innerHeight * 0.85);
+  const sel = ".section-head, .ticket, .acard, .rowlist__item, .band, .promo, .card, .termcard, .test-card, .author, .empty, .tip, .lead-story, .prose > *, .ielts-scale, .scorebar, #art-unis, #art-next, .uni-photo, .art-photo";
+  const els = $$(sel).filter(el => !el.closest(".hero, .art-head, .overlay, .panel") && el.getBoundingClientRect().top > innerHeight * 0.85);
   const show = t => {
     if (!t.classList.contains("reveal") || t.classList.contains("is-in")) return;
     t.classList.add("is-in");
@@ -916,6 +768,5 @@ function initAnimations() {
 /* ---------- запуск ---------- */
 renderChrome();
 if (pages[page]) pages[page]();
-refreshTickets();
 initAnimations();
 })();

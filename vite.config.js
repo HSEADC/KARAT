@@ -19,9 +19,11 @@ const pages = {
   article: { file: 'pages/article.html', chunks: allChunks },
   glossary: { file: 'pages/glossary.html', chunks: allChunks },
   tests: { file: 'pages/tests.html', chunks: allChunks },
-  compare: { file: 'pages/compare.html', chunks: allChunks },
-  saved: { file: 'pages/saved.html', chunks: allChunks },
   about: { file: 'pages/about.html', chunks: allChunks },
+  russia: { file: 'pages/russia.html', chunks: allChunks },
+
+  // заглушка
+  soon: { file: 'pages/soon.html', chunks: allChunks },
 
   // статья-пример
   freeEurope: { file: 'pages/articles/free-europe.html', chunks: allChunks },
