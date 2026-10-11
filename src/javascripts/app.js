@@ -21,6 +21,7 @@ const ROOT = document.body.dataset.root || "";
 const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "about.html": "pages/about.html", "russia.html": "pages/russia.html", "soon.html": "pages/soon.html"};
 const url = file => ROOT + (PAGES[file] || file);
 const FORM_URL = "https://formspree.io/f/mppqrdqz";
+const TG = "https://t.me/zagranmedia";
 // пример статьи лежит отдельным файлом
 const STATIC_ARTICLES = ["free-europe"];
 const artHref = id => STATIC_ARTICLES.includes(id) ? `${ROOT}pages/articles/${id}.html` : `${url("article.html")}?id=${id}`;
@@ -49,25 +50,6 @@ const ICONS = {
 };
 const icon = (n, cls = "icon") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
 
-/* ---------- штрихкод ---------- */
-function barcode(seed, w = 64, h = 160, vertical = true, light = false) {
-  let x = 0, s = 0; for (const c of String(seed)) s = (s * 31 + c.charCodeAt(0)) >>> 0;
-  const rnd = () => (s = (s * 1103515245 + 12345) >>> 0) / 4294967296;
-  const len = vertical ? h : w, thick = vertical ? w : h; let bars = "";
-  while (x < len) {
-    const b = 1 + Math.floor(rnd() * 3.2), g = 1 + Math.floor(rnd() * 2.6);
-    if (x + b > len) break;
-    bars += vertical ? `<rect x="0" y="${x}" width="${thick}" height="${b}"/>` : `<rect x="${x}" y="0" width="${b}" height="${thick}"/>`;
-    x += b + g;
-  }
-  const svg = `<svg class="barcode${vertical ? " barcode--v" : ""}${light ? " barcode--light" : ""}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="currentColor" aria-hidden="true">${bars}</svg>`;
-  // для телефона ещё горизонтальный вариант
-  return vertical ? svg + barcode(seed + "m", Math.min(220, h), 36, false, light).replace('class="barcode', 'class="barcode barcode--m') : svg;
-}
-
-// штрихкоды из data-barcode="ширина,высота,v,l"
-const drawBarcodes = seed => $$("[data-barcode]").forEach(el => { const [w, h, v, l] = el.dataset.barcode.split(","); el.innerHTML = barcode(el.dataset.seed || seed, +w, +h, v === "v", l === "l"); });
-
 /* ---------- логотип ---------- */
 const LOGO = window.LOGO_SVG || '<span style="font:900 24px/1 Golos Text">ЗАГРАНЬ</span>';
 
@@ -95,7 +77,7 @@ function renderChrome() {
     <nav class="nav">${NAV.map(([h, t, p]) => `<a href="${url(h)}"${p.includes(page) ? ' class="is-active"' : ""}>${t}</a>`).join("")}</nav>
     <div class="header__tools">
       <button class="icon-btn" data-action="search" aria-label="Поиск">${icon("search")}</button>
-      <a class="btn btn--primary header__cta" href="${url("match.html")}">Подобрать вуз</a>
+      <a class="header__tg" href="${TG}" target="_blank" rel="noopener">Telegram ↗</a>
       <button class="icon-btn burger" data-action="menu" aria-label="Меню" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17"/></svg></button>
     </div></div>`;
   document.body.prepend(header);
@@ -115,15 +97,14 @@ function renderChrome() {
   footer.innerHTML = `<div class="container">
     <div class="footer__top">
       <a class="logo" href="${url("index.html")}" aria-label="ЗАГРАНЬ">${LOGO}</a>
-      <nav class="footer__nav">${NAV.map(([h, t]) => `<a href="${url(h)}">${t}</a>`).join("")}<a href="https://t.me/zagranmedia" target="_blank" rel="noopener">Telegram ↗</a></nav>
+      <nav class="footer__nav">${NAV.map(([h, t]) => `<a href="${url(h)}">${t}</a>`).join("")}<a href="${TG}" target="_blank" rel="noopener">Telegram ↗</a></nav>
+    </div>
+    <div class="footer__bottom">
       <form class="footer__form" data-form="subscribe" action="${FORM_URL}" method="POST" novalidate>
         <input type="email" name="email" placeholder="Почта для рассылки" aria-label="Почта" required>
         <button type="submit" aria-label="Подписаться">${icon("arrow")}</button>
       </form>
-    </div>
-    <div class="footer__bottom">
-      <span>© 2026 ЗАГРАНЬ</span>
-      <span>Фатикова Кристина, Шиян Валерия</span>
+      <div class="footer__copy"><span>© 2026 ЗАГРАНЬ</span><span>Фатикова Кристина, Шиян Валерия</span></div>
     </div></div>`;
   document.body.append(footer);
   }
@@ -148,27 +129,20 @@ function toast(msg) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("is-visible"), 2200);
 }
 
-/* ---------- билет вуза ---------- */
+/* ---------- карточка вуза ---------- */
 function ticket(u, row = false) {
-  const data = `<dl class="ticket__data">
-      <div><dt>Плата в год</dt><dd>${fee(u)}</dd></div>
+  const data = `<dl class="ucard__data">
+      <div><dt>в год</dt><dd>${fee(u)}</dd></div>
       <div><dt>IELTS</dt><dd>${ielts(u)}</dd></div>
-      ${row ? `<div><dt>Дедлайн</dt><dd class="ticket__dl">${esc(shortDeadline(u))}</dd></div>` : ""}
+      ${row ? `<div><dt>дедлайн</dt><dd class="ucard__dl">${esc(shortDeadline(u))}</dd></div>` : ""}
     </dl>`;
-  const tags = `<div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${isFree(u) ? '<span class="tag">Без платы</span>' : ""}${u.dirs.slice(0, row ? 3 : 0).map(d => `<span class="tag">${DIRS[d]}</span>`).join("")}</div>`;
-  if (row) return `<article class="ticket ticket--row" data-uni="${u.id}">
-    <a class="ticket__main" href="${url("university.html")}?id=${u.id}">
-      <div class="ticket__photo" style="background-image:url(${uniImg(u.id)})"></div>
-      <div class="ticket__info"><div class="ticket__city">${esc(u.city)} · ${esc(u.country)}</div><h3 class="ticket__name">${esc(u.name)}</h3>${tags}</div>
-    </a>
-    <div class="ticket__stub">${data}</div></article>`;
-  return `<article class="ticket" data-uni="${u.id}">
-    <a class="ticket__main" href="${url("university.html")}?id=${u.id}">
-      <div class="ticket__top"><span>${esc(u.country)}</span><span>${esc(u.city)}</span></div>
-      <div class="ticket__photo" style="background-image:url(${uniImg(u.id)})"><span class="credit">${esc(uniCredit(u))}</span></div>
-      <h3 class="ticket__name">${esc(u.name)}</h3>${tags}
-    </a>
-    <div class="ticket__stub">${data}</div></article>`;
+  const tags = row ? `<div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${u.dirs.slice(0, 3).map(d => `<span class="tag">${DIRS[d]}</span>`).join("")}</div>` : "";
+  // наклейка только там, где она что-то значит
+  const sticker = isFree(u) ? '<span class="sticker sticker--green sticker--s" style="--r:5deg">без платы</span>' : "";
+  return `<a class="ucard${row ? " ucard--row" : ""}" href="${url("university.html")}?id=${u.id}" data-uni="${u.id}">${sticker}
+    <div class="ucard__photo" style="background-image:url(${uniImg(u.id)})">${row ? "" : `<span class="credit">${esc(uniCredit(u))}</span>`}</div>
+    <div class="ucard__body"><h3 class="ucard__name">${esc(u.name)}</h3><span class="ucard__city">${esc(u.city)}, ${esc(u.country)}</span>${row ? tags : data}</div>
+    ${row ? data : ""}</a>`;
 }
 
 /* ---------- общие события ---------- */
@@ -251,17 +225,17 @@ function enhanceTerms(root) {
 }
 
 /* ---------- общие блоки ---------- */
-const photoTicket = (img, inner, stub, cls = "", credit = "") =>
-  `<div class="tphoto ${cls}"><div class="tphoto__img" style="background-image:url(${img})">${inner || ""}${credit ? `<span class="credit">${esc(credit)}</span>` : ""}</div><div class="tphoto__stub">${stub || ""}</div></div>`;
+const photo = (img, inner = "", cls = "", credit = "") =>
+  `<div class="photo ${cls}" style="background-image:url(${img})">${inner}${credit ? `<span class="credit">${esc(credit)}</span>` : ""}</div>`;
 const articleRow = a => `<a class="rowlist__item" href="${artHref(a.id)}">
   <span class="rowlist__meta muted">${a.rubric}</span>
   <span class="rowlist__title h3">${esc(a.title)}</span>
   <span class="muted small">${a.read} мин</span>
   <span class="rowlist__thumb" style="background-image:url(${artImg(a)})"></span></a>`;
-const articleCard = (a, big) => `<a class="acard" href="${artHref(a.id)}">
-  <div class="acard__photo" style="background-image:url(${artImg(a)})${big ? ";aspect-ratio:4/3" : ""}"></div>
-  <span class="muted small">${a.rubric} · ${a.read} мин</span>
-  <h3 class="${big ? "h2" : "h3"}">${esc(a.title)}</h3></a>`;
+const articleCard = (a, big) => `<a class="acard${big ? " acard--big" : ""}" href="${artHref(a.id)}">
+  <div class="acard__photo" style="background-image:url(${artImg(a)})"></div>
+  <div class="acard__text"><span class="accent small"><b>${a.rubric}</b> · ${a.read} мин</span>
+  <h3 class="${big ? "h1" : "h3"}">${esc(a.title)}</h3>${big ? `<p class="muted" style="margin:0">${esc(a.lead)}</p><span class="btn btn--primary" style="align-self:flex-start">Читать →</span>` : `<span class="more">Читать →</span>`}</div></a>`;
 
 /* ---------- страницы ---------- */
 const pages = {};
@@ -269,11 +243,9 @@ const pages = {};
 /* ---------- главная ---------- */
 pages.home = () => {
   const pick = ["eth", "tudelft", "bocconi", "aalto", "kuleuven", "uva", "polimi", "tum", "edinburgh", "cuni", "lund", "epfl"].map(id => byId[id]).filter(Boolean);
-  const all = $("[data-all-unis]"); if (all) all.textContent = `Все ${UNIS.length}`;
   $("#home-unis").innerHTML = pick.map(u => ticket(u)).join("");
   const [first, ...rest] = ARTICLES;
-  $("#home-articles").innerHTML = `<div class="mosaic">${articleCard(first, true)}<div class="stack gap-32">${rest.slice(0, 3).map(a => articleCard(a)).join("")}</div></div>`;
-  drawBarcodes("z");
+  $("#home-articles").innerHTML = `<div class="mosaic">${articleCard(first, true)}<div class="stack gap-16">${rest.slice(0, 3).map(a => articleCard(a)).join("")}</div></div>`;
   const form = $("#matchbar");
   form.addEventListener("submit", e => {
     e.preventDefault();
@@ -332,7 +304,6 @@ pages.universities = () => {
     $("[data-budget-out]").textContent = st.budget >= 60000 ? "любая" : "до €" + nbsp(st.budget);
     $("#cat-count").textContent = list.length;
     $("#cat-count-label").textContent = plural(list.length, "вуз", "вуза", "вузов");
-    const cm = $("#cat-count-m"); if (cm) cm.textContent = `${list.length} из ${UNIS.length}`;
     const sc = $("[data-show-count]"); if (sc) sc.textContent = `Показать ${list.length} ${plural(list.length, "вуз", "вуза", "вузов")}`;
     const active = st.countries.size + st.regions.size + st.dirs.size + (st.budget < 60000) + st.free + st.english + !!st.ielts;
     const fc = $("[data-filter-count]"); if (fc) fc.textContent = active ? ` · ${active}` : "";
@@ -370,7 +341,6 @@ pages.universities = () => {
     $$("#filters input[type=checkbox]").forEach(c => c.checked = false);
     $("#filters [name=budget]").value = 60000; $("#filters [name=ielts]").value = ""; st.shown = 12; apply();
   });
-  $("#cat-barcode").innerHTML = barcode("catalog", 240, 44, false);
   apply();
 };
 
@@ -378,46 +348,45 @@ pages.universities = () => {
 pages.university = () => {
   const u = byId[params.get("id")];
   if (!u) {
-    $("#uni-panel").innerHTML = `<h1 class="h2">Вуз не найден</h1><p class="muted">Возможно, ссылка устарела</p><a class="btn btn--primary" href="${url("universities.html")}">В каталог</a>`;
+    $("#uni-head").innerHTML = `<div class="pagehead__text"><h1 class="pagehead__title pagehead__title--m">Вуз не найден</h1><p class="pagehead__sub">Возможно, ссылка устарела</p><a class="btn btn--light" href="${url("universities.html")}" style="align-self:flex-start">В каталог</a></div>`;
     return;
   }
   document.title = u.name + " — ЗАГРАНЬ";
-  const host = s => { try { return new URL(s).hostname.replace(/^www\./, ""); } catch (e) { return s; } };
-  $("#uni-panel").innerHTML = `
-    <div class="muted">${esc(u.city)} · ${esc(u.country)}</div>
-    <h1 class="h2">${esc(u.name)}</h1>
-    <div class="tags">${u.english ? '<span class="tag tag--accent">На английском</span>' : ""}${isFree(u) ? '<span class="tag">Без платы</span>' : ""}</div>
-    <dl class="facts">
-      <div><dt>Плата в год</dt><dd>${fee(u)}</dd></div>
-      <div><dt>IELTS</dt><dd>${u.ielts == null ? "по программе" : ielts(u)}</dd></div>
-      <div><dt>Язык</dt><dd>${esc(u.lang)}</dd></div>
-    </dl>
-    <div class="panel__stub row between">
-      <a class="link" href="${esc(u.src[0])}" target="_blank" rel="noopener">${esc(host(u.src[0]))}</a>
-      ${barcode(u.id, 120, 40, false)}
-    </div>`;
+  $("#uni-head").innerHTML = `
+    <div class="pagehead__text">
+      <h1 class="pagehead__title pagehead__title--m">${esc(u.name)}</h1>
+      <div class="row gap-16" style="flex-wrap:wrap">
+        <span class="sticker sticker--l" style="--r:-4deg">${fee(u)} в год</span>
+        <span class="sticker sticker--mint sticker--l" style="--r:5deg">${u.ielts == null ? "IELTS по программе" : "IELTS " + ielts(u)}</span>
+      </div>
+      <p class="pagehead__sub">${esc(u.city)}, ${esc(u.country)} · ${u.dirs.map(d => DIRS[d].toLowerCase()).join(", ")}</p>
+    </div>
+    <div class="photo-circle" style="background-image:url(${uniImg(u.id)})" role="img" aria-label="${esc(u.name)}" title="${esc(uniCredit(u))}"></div>`;
 
+  const host = s => { try { return new URL(s).hostname.replace(/^www\./, ""); } catch (e) { return s; } };
   const mentions = ARTICLES.filter(a => a.unis.includes(u.id));
   const similar = UNIS.filter(x => x.id !== u.id && (x.country === u.country || x.region === u.region) && x.dirs.some(d => u.dirs.includes(d)))
     .sort((a, b) => (b.country === u.country) - (a.country === u.country) || Math.abs((a.feeYear || 0) - (u.feeYear || 0)) - Math.abs((b.feeYear || 0) - (u.feeYear || 0))).slice(0, 3);
   $("#uni-main").innerHTML = `
-    ${photoTicket(uniImg(u.id), "", barcode(u.id + "v", 44, 300, true), "uni-photo", uniCredit(u))}
-    <section class="band band--compact"><div class="band__body">
+    <section class="band band--compact grain"><div class="band__body">
       <div><div class="band__num">${u.feeYear == null ? "?" : isFree(u) ? "€0" : u.feeYear < 1000 ? "€" + u.feeYear : "€" + Math.round(u.feeYear / 1000) + "k"}</div><div class="band__label">${isFree(u) ? "плата за обучение" : "плата в год, примерно"}</div></div>
       <div><div class="band__num accent">${u.ielts == null ? "—" : ielts(u)}</div><div class="band__label">${u.ielts == null ? "IELTS по программе" : "минимум IELTS"}</div></div>
       <div><div class="band__num band__num--sm">${esc(shortDeadline(u))}</div><div class="band__label">дедлайн</div></div>
-    </div><div class="band__stub">${barcode(u.id + "b", 40, 150, true, true)}</div></section>
+    </div></section>
     <section class="grid-2">
       <div class="card"><div class="muted small">Плата</div><div class="h4">${esc(u.tuition)}</div></div>
       <div class="card"><div class="muted small">Дедлайн</div><div class="h4">${esc(u.deadline)}</div></div>
-      ${u.note ? `<div class="card" style="grid-column:1/-1"><div class="muted small">Важно</div><div>${esc(u.note)}</div></div>` : ""}
+      <div class="card"><div class="muted small">Язык обучения</div><div class="h4">${esc(u.lang)}</div></div>
+      ${u.note ? `<div class="card"><div class="muted small">Важно</div><div class="h4">${esc(u.note)}</div></div>` : ""}
     </section>
-    <section><div class="section-head"><h2 class="h2">Направления</h2></div>
+    <section><div class="section-head"><h2 class="h1">Направления</h2></div>
       <div class="chips">${u.dirs.map(d => `<a class="chip" href="${url("universities.html")}?dir=${d}">${DIRS[d]}</a>`).join("")}</div></section>
-    ${mentions.length ? `<section><div class="section-head"><h2 class="h2">В статьях</h2></div><div class="rowlist">${mentions.map(articleRow).join("")}</div></section>` : ""}
-    <section><div class="section-head"><h2 class="h2">Похожие</h2><a class="btn btn--ghost" href="${url("universities.html")}?country=${encodeURIComponent(u.country)}">Все в стране</a></div>
+    ${mentions.length ? `<section><div class="section-head"><h2 class="h1">В статьях</h2></div><div class="listcard"><div class="rowlist">${mentions.map(articleRow).join("")}</div></div></section>` : ""}
+    <section><div class="section-head"><h2 class="h1">Похожие</h2><a class="more" href="${url("universities.html")}?country=${encodeURIComponent(u.country)}">Все в стране →</a></div>
       <div class="grid-3">${similar.map(x => ticket(x)).join("")}</div></section>
-    <section class="sources"><div>Источники</div>${u.src.map(s => `<div><a href="${esc(s)}" target="_blank" rel="noopener">${esc(s)}</a></div>`).join("")}
+    <section class="sources stack gap-8">
+      <a class="btn btn--primary" href="${esc(u.src[0])}" target="_blank" rel="noopener" style="align-self:flex-start">Сайт вуза: ${esc(host(u.src[0]))} ↗</a>
+      <div style="margin-top:12px">Источники</div>${u.src.map(s => `<div><a href="${esc(s)}" target="_blank" rel="noopener">${esc(s)}</a></div>`).join("")}
       <div style="margin-top:8px">${u.photo ? `Фото: <a href="${esc(u.photo.url)}" target="_blank" rel="noopener">${esc(u.photo.author)}</a>, ${esc(u.photo.license)}` : ""}</div></section>`;
 };
 
@@ -430,8 +399,7 @@ pages.articles = () => {
     chips.innerHTML = rubrics.map(r => `<button class="chip${r === cur ? " is-active" : ""}" data-rubric="${r}">${r}</button>`).join("");
     const list = ARTICLES.filter(a => cur === "Все" || a.rubric === cur);
     const [lead, ...rest] = list;
-    $("#lead-story").innerHTML = lead ? `<a href="${artHref(lead.id)}" class="lead-story">
-      ${photoTicket(artImg(lead), `<div class="tphoto__caption"><span class="small">${lead.rubric} · ${lead.read} мин</span><h2 class="h1">${esc(lead.title)}</h2></div>`, barcode(lead.id, 44, 260, true), "tphoto--hero", artCredit(lead))}</a>` : "";
+    $("#lead-story").innerHTML = lead ? articleCard(lead, true) : "";
     $("#article-list").innerHTML = rest.map(articleRow).join("");
   };
   chips.addEventListener("click", e => { const b = e.target.closest("[data-rubric]"); if (!b) return; cur = b.dataset.rubric; render(); });
@@ -447,27 +415,28 @@ pages.article = () => {
   }
   document.title = a.title + " — ЗАГРАНЬ";
   $("#art-head").innerHTML = `
-    <div class="muted">${a.rubric} · ${fmtDate(a.date)} · ${a.read} мин</div>
-    <h1 class="h1 art-title">${esc(a.title)}</h1>
-    <p class="lead art-lead">${esc(a.lead)}</p>
-    ${photoTicket(artImg(a), "", barcode(a.id, 44, 300, true), "art-photo", artCredit(a))}`;
+    <div class="art-meta"><span class="sticker sticker--s" style="--r:-4deg">${a.rubric} · ${a.read} мин</span><span class="sticker sticker--mint sticker--s" style="--r:3deg">${fmtDate(a.date)}</span></div>
+    <h1 class="pagehead__title pagehead__title--m">${esc(a.title)}</h1>
+    <p class="pagehead__sub">${esc(a.lead)}</p>`;
+  const ph = $("#art-photo");
+  ph.style.backgroundImage = `url(${artImg(a)})`;
+  if (artCredit(a)) ph.innerHTML = `<span class="credit">${esc(artCredit(a))}</span>`;
   const prose = $("#art-body");
   prose.innerHTML = a.html;
   $$("h2", prose).forEach((h, i) => h.id = "s" + (i + 1));
   enhanceTerms(prose);
   $("#art-toc").innerHTML = $$("h2", prose).map(h => `<a href="#${h.id}">${esc(h.textContent)}</a>`).join("");
-  $("#art-save").dataset.save = a.id;
   const tocLinks = $$("#art-toc a");
   const io = new IntersectionObserver(ents => ents.forEach(en => {
     if (en.isIntersecting) tocLinks.forEach(l => l.classList.toggle("is-active", l.getAttribute("href") === "#" + en.target.id));
   }), { rootMargin: "-100px 0px -70% 0px" });
   $$("h2", prose).forEach(h => io.observe(h));
   const unis = a.unis.map(id => byId[id]).filter(Boolean);
-  $("#art-unis").innerHTML = unis.length ? `<div class="section-head"><h2 class="h2">Вузы из статьи</h2><span class="muted">${unis.length}</span></div><div class="grid-3">${unis.slice(0, 6).map(u => ticket(u)).join("")}</div>
+  $("#art-unis").innerHTML = unis.length ? `<div class="section-head"><h2 class="h1">Вузы из статьи</h2><span class="muted">${unis.length}</span></div><div class="grid-3">${unis.slice(0, 6).map(u => ticket(u)).join("")}</div>
      ${unis.length > 6 ? `<div class="stack gap-12" style="margin-top:16px">${unis.slice(6).map(u => `<a class="link" href="${url("university.html")}?id=${u.id}">${esc(u.name)}</a>`).join("")}</div>` : ""}` : "";
   const i = ARTICLES.indexOf(a);
   const next = [1, 2, 3].map(k => ARTICLES[(i + k) % ARTICLES.length]);
-  $("#art-next").innerHTML = `<div class="section-head"><h2 class="h2">Читать дальше</h2><a class="btn btn--ghost" href="${url("articles.html")}">Все статьи</a></div><div class="grid-3 gap-24">${next.map(x => articleCard(x)).join("")}</div>`;
+  $("#art-next").innerHTML = `<div class="section-head"><h2 class="h1">Читать дальше</h2><a class="more" href="${url("articles.html")}">Все статьи →</a></div><div class="stack gap-16">${next.map(x => articleCard(x)).join("")}</div>`;
   if ($("#art-progress-bar")) window.addEventListener("scroll", () => {
     const r = prose.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * 0.4 - r.top) / r.height));
     $("#art-progress-bar").style.width = (p * 100) + "%";
@@ -566,15 +535,14 @@ pages.match = () => {
       main.innerHTML = `<div class="stack gap-24">
         <div class="row between"><div class="stack gap-8"><div class="muted">Готово</div><h1 class="h1">Твои вузы</h1></div>
           <div class="row gap-12"><button class="btn btn--secondary" data-restart>Пройти заново</button></div></div>
-        ${res.slice(0, shown).map(r => `<article class="result">
+        ${res.slice(0, shown).map((r, k) => `<article class="result">
           <div class="result__top">
-            <div class="match${r.pct < 75 ? " match--mid" : ""}">${r.pct}%</div>
             <a class="result__photo" href="${url("university.html")}?id=${r.u.id}" style="background-image:url(${uniImg(r.u.id)})"></a>
-            <div class="stack gap-8" style="flex:1;min-width:0"><span class="muted small">${esc(r.u.city)} · ${esc(r.u.country)}</span><a class="h3" href="${url("university.html")}?id=${r.u.id}">${esc(r.u.name)}</a>
-              <div class="row gap-24 small"><span>Плата: <b>${fee(r.u)}</b></span><span>IELTS: <b>${ielts(r.u)}</b></span></div></div>
-            
+            <div class="stack gap-8" style="flex:1;min-width:0"><a class="h3" href="${url("university.html")}?id=${r.u.id}">${esc(r.u.name)}</a>
+              <span class="muted small">${esc(r.u.city)}, ${esc(r.u.country)} · ${fee(r.u)} · IELTS ${ielts(r.u)}</span>
+              <div class="tags">${r.reasons.map(([ok, t]) => `<span class="reason${ok ? "" : " reason--no"}">${ok ? "✓" : "✕"} ${esc(t)}</span>`).join("")}</div></div>
+            <div class="match sticker-circle${r.pct >= 85 ? " sticker--green" : r.pct >= 70 ? " match--mid" : " match--low"}" style="--r:${[-6, 5, -3][k % 3]}deg">${r.pct}%</div>
           </div>
-          <div class="tags">${r.reasons.map(([ok, t]) => `<span class="reason${ok ? "" : " reason--no"}">${ok ? "✓" : "✕"} ${esc(t)}</span>`).join("")}</div>
         </article>`).join("")}
         ${shown < res.length ? `<button class="btn btn--secondary" data-more>Показать ещё 10</button>` : ""}
       </div>`;
@@ -600,7 +568,6 @@ pages.match = () => {
     const li = e.target.closest("[data-goto]"); if (!li) return;
     const i = +li.dataset.goto; if (ans[STEPS[i].key] || i <= Object.keys(ans).length) { step = i; renderQ(); }
   });
-  $("#match-barcode").innerHTML = barcode("match", 240, 44, false);
   if (params.get("done") && STEPS.every(s => ans[s.key])) renderResult(); else renderQ();
 };
 
@@ -610,8 +577,8 @@ pages.quiz = () => {
   const main = $("#quiz-main"), side = $("#quiz-side");
   const titles = { country: "Какая страна — твоя?", ielts: "Хватит ли английского?", foundation: "Foundation или сразу?" };
   document.title = (titles[id] || titles.country) + " — ЗАГРАНЬ";
+  $("#quiz-head h1").textContent = titles[id] || titles.country;
   $$("[data-quiz-link]").forEach(a => a.classList.toggle("is-active", a.dataset.quizLink === id));
-  $("#quiz-barcode").innerHTML = barcode(id, 240, 44, false);
 
   if (id === "ielts") {
     let score = 6.5;
@@ -631,15 +598,15 @@ pages.quiz = () => {
       const pct = Math.round(ok.length / withNum.length * 100);
       main.innerHTML = `<div class="stack gap-32">
         <div class="stack gap-12"><div class="muted">Хватит ли IELTS ${score.toFixed(1)}?</div><h1 class="h1">${pct >= 90 ? "Хватит почти везде" : pct >= 50 ? "Хватит для многих" : pct > 0 ? "Хватит не везде" : "Пока не хватит"}</h1></div>
-        <section class="band band--compact"><div class="band__body">
+        <section class="band band--compact grain"><div class="band__body">
           <div><div class="band__num accent">${ok.length}</div><div class="band__label">из ${withNum.length} вузов с единым минимумом</div></div>
           <div><div class="band__num">${near.length}</div><div class="band__label">не хватает 0.5</div></div>
           <div><div class="band__num">${UNIS.length - withNum.length}</div><div class="band__label">смотрят по программе</div></div>
-        </div><div class="band__stub">${barcode("ielts" + score, 40, 150, true, true)}</div></section>
+        </div></section>
         <div class="stack gap-8"><div class="ielts-scale">${SCALE.map(v => { const n = withNum.filter(u => u.ielts === v).length, mx = Math.max(...SCALE.map(x => withNum.filter(u => u.ielts === x).length)); return `<div class="${v <= score ? "is-ok" : ""}"><span style="height:${Math.max(8, Math.round(n / mx * 130))}px"></span><b>${v.toFixed(1)}</b><small>${n} ${plural(n, "вуз", "вуза", "вузов")}</small></div>`; }).join("")}</div></div>
         ${near.length ? `<section class="stack gap-16"><h2 class="h2">Чуть-чуть не хватает</h2><div class="grid-3">${near.map(u => ticket(u)).join("")}</div></section>` : ""}
         ${ok.length ? `<section class="stack gap-16"><h2 class="h2">Хватает</h2><div class="stack gap-16">${ok.map(u => ticket(u, true)).join("")}</div></section>` : ""}
-        <div class="tip">IELTS в России не проводят: где сейчас сдать экзамен — <a class="link" href="${url("russia.html")}#exams">в разделе «Из России»</a>. Минимум по каждой части тоже важен — часто это 6.0. <a class="link" href="${url("article.html")}?id=ielts">Читать про IELTS</a></div>
+        <div class="note">IELTS в России не проводят: где сейчас сдать экзамен — <a class="link" href="${url("russia.html")}#exams">в разделе «Из России»</a>. Минимум по каждой части тоже важен — часто это 6.0. <a class="link" href="${url("article.html")}?id=ielts">Читать про IELTS</a></div>
       </div>`;
     };
     $("#ielts-range").addEventListener("input", e => { score = +e.target.value; draw(); });
@@ -668,7 +635,7 @@ pages.quiz = () => {
       const s = answers.reduce((acc, k, n) => acc + Q.questions[n].options[k].s, 0);
       const v = Q.verdicts.find(x => s <= x.max);
       main.innerHTML = `<div class="stack gap-32">
-        ${photoTicket(ROOT + Q.photo, `<div class="tphoto__caption"><span class="small">Результат</span><h1 class="h1">${v.title}</h1></div>`, barcode("f" + s, 44, 240, true), "tphoto--hero")}
+        ${photo(ROOT + Q.photo, `<div class="photo__caption"><span class="small">Результат</span><h2 class="h1">${v.title}</h2></div>`, "quiz-photo")}
         <p class="lead">${v.text}</p>
         <div class="row gap-12"><a class="btn btn--primary" href="${url("article.html")}?id=foundation">Что такое Foundation</a><a class="btn btn--secondary" href="${url("glossary.html")}#studienkolleg">Studienkolleg</a><button class="btn btn--ghost" data-restart>Пройти заново</button></div>
       </div>`;
@@ -680,9 +647,9 @@ pages.quiz = () => {
     const max = rank[0][1] || 1;
     const r = Q.results[rank[0][0]];
     const unis = UNIS.filter(u => u.country === r.country).slice(0, 3);
-    const photo = unis[0] ? uniImg(unis[0].id) : ROOT + Q.photo;
+    const img = unis[0] ? uniImg(unis[0].id) : ROOT + Q.photo;
     main.innerHTML = `<div class="stack gap-32">
-      ${photoTicket(photo, `<div class="tphoto__caption"><span class="small">Твоя страна</span><h1 class="h1">${r.name}</h1></div>`, barcode(r.name, 44, 240, true), "tphoto--hero")}
+      ${photo(img, `<div class="photo__caption"><span class="small">Твоя страна</span><h2 class="h1">${r.name}</h2></div>`, "quiz-photo")}
       <p class="lead">${r.text}</p>
       <div class="stack gap-12">${rank.slice(0, 4).map(([c, v]) => `<div class="scorebar"><span>${Q.results[c].name}</span><div class="bar"><span class="${c === rank[0][0] ? "is-best" : ""}" style="width:${Math.round(v / max * 100)}%"></span></div><b>${Math.round(v / max * 100)}%</b></div>`).join("")}</div>
       <div class="grid-3">${unis.map(u => ticket(u)).join("")}</div>
@@ -698,20 +665,13 @@ pages.quiz = () => {
   drawQ();
 };
 
-/* ---------- тесты: хаб ---------- */
-pages.tests = () => {
-  drawBarcodes("t");
-};
-
-/* ---------- заглушка ---------- */
-pages.soon = () => drawBarcodes("s");
-
-/* ---------- о медиа ---------- */
-pages.about = () => {
-  drawBarcodes("a");
-  $("#about-count").textContent = UNIS.length;
-  $("#about-countries").textContent = new Set(UNIS.map(u => u.country)).size;
-};
+/* ---------- счётчики из данных ---------- */
+function fillCounts() {
+  const n = { uni: UNIS.length, country: new Set(UNIS.map(u => u.country)).size, article: ARTICLES.length };
+  $$("[data-uni-count]").forEach(el => el.textContent = n.uni);
+  $$("[data-country-count]").forEach(el => el.textContent = n.country);
+  $$("[data-article-count]").forEach(el => el.textContent = n.article);
+}
 
 
 /* ---------- анимации ---------- */
@@ -743,8 +703,8 @@ function splitFlap(el) {
 function initAnimations() {
   requestAnimationFrame(() => document.body.classList.add("is-ready"));
   if (reduced || !("IntersectionObserver" in window)) return;
-  const sel = ".section-head, .ticket, .acard, .rowlist__item, .band, .promo, .card, .termcard, .test-card, .author, .empty, .tip, .lead-story, .prose > *, .ielts-scale, .scorebar, #art-unis, #art-next, .uni-photo, .art-photo";
-  const els = $$(sel).filter(el => !el.closest(".hero, .art-head, .overlay, .panel") && el.getBoundingClientRect().top > innerHeight * 0.85);
+  const sel = ".section-head, .ucard, .acard, .ru-card, .rowlist__item, .band, .numbers__item, .card, .termcard, .test-card, .author, .empty, .tip, .note, .prose > *, .ielts-scale, .scorebar, #art-unis, #art-next, .art-photo";
+  const els = $$(sel).filter(el => !el.closest(".hero, .pagehead, .overlay, .panel") && el.getBoundingClientRect().top > innerHeight * 0.85);
   const show = t => {
     if (!t.classList.contains("reveal") || t.classList.contains("is-in")) return;
     t.classList.add("is-in");
@@ -767,6 +727,7 @@ function initAnimations() {
 
 /* ---------- запуск ---------- */
 renderChrome();
+fillCounts();
 if (pages[page]) pages[page]();
 initAnimations();
 })();

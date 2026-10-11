@@ -2,17 +2,12 @@
 .container { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
 
 /* две колонки: панель и контент */
-.split { display: grid; grid-template-columns: 400px 1fr; gap: 40px; padding: 32px 0 96px; align-items: start; }
+.split { display: grid; grid-template-columns: 340px 1fr; gap: 40px; padding: 56px 0 96px; align-items: start; }
+.split > * { min-width: 0; }
 .split__main { display: flex; flex-direction: column; gap: 64px; min-width: 0; }
 .panel {
-  position: sticky; top: 108px;
-  background: var(--raised); border-radius: var(--r-xl);
-  padding: 36px 32px 0; display: flex; flex-direction: column; gap: 24px;
-  overflow: hidden;
+  position: sticky; top: 112px;
+  background: var(--white); border-radius: var(--r-xl);
+  padding: 32px 28px; display: flex; flex-direction: column; gap: 22px;
 }
-.panel__stub { position: relative; margin: 8px -32px 0; padding: 26px 32px 28px; border-top: 1.5px dashed var(--ink); }
-.panel__stub::before, .panel__stub::after { content: ""; position: absolute; top: -14px; width: 28px; height: 28px; border-radius: 50%; background: var(--paper); }
-.panel__stub::before { left: -14px; }
-.panel__stub::after { right: -14px; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 24px; }
-
+.panel__stub { margin-top: 4px; padding-top: 20px; border-top: 1px solid var(--raised); }
