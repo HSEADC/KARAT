@@ -410,7 +410,8 @@ pages.articles = () => {
 pages.article = () => {
   const a = artById[params.get("id") || document.body.dataset.article];
   if (!a) {
-    $("#art-head").innerHTML = `<h1 class="h1">Статья не найдена</h1><p class="lead">Возможно, ссылка устарела</p><a class="btn btn--primary" href="${url("articles.html")}">Все статьи</a>`;
+    $("#art-head").innerHTML = `<h1 class="pagehead__title pagehead__title--m">Статья не найдена</h1><p class="pagehead__sub">Возможно, ссылка устарела</p><a class="btn btn--light" href="${url("articles.html")}" style="align-self:flex-start">Все статьи</a>`;
+    $(".split").classList.add("is-hidden");
     return;
   }
   document.title = a.title + " — ЗАГРАНЬ";

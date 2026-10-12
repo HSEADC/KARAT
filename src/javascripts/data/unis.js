@@ -3674,28 +3674,10 @@ window.PHOTO_CREDITS = {
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Zuidas_VU_10.jpg"
   },
-  hero_amsterdam: {
-    title: "File:Canal houses and Oude Kerk at blue hour with water reflection in Damrak Amsterdam Netherlands.jpg",
-    author: "Basile Morin",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Canal_houses_and_Oude_Kerk_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg"
-  },
   hero_nyhavn: {
     title: "File:Kopenhagen (DK), Nyhavn -- 2017 -- 1538.jpg",
     author: "Dietmar Rabich",
     license: "CC BY-SA 4.0",
     url: "https://commons.wikimedia.org/wiki/File:Kopenhagen_(DK),_Nyhavn_--_2017_--_1538.jpg"
-  },
-  about_prague: {
-    title: "File:Prague - Charles Bridge (55160931335).jpg",
-    author: "Jorge Franganillo",
-    license: "CC BY 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Prague_-_Charles_Bridge_(55160931335).jpg"
-  },
-  about_lisbon: {
-    title: "File:Number 28 tram, Calçada de São Francisco, Lisbon, Portugal julesvernex2.jpg",
-    author: "Jules Verne Times Two",
-    license: "CC BY-SA 4.0",
-    url: "https://commons.wikimedia.org/wiki/File:Number_28_tram,_Cal%C3%A7ada_de_S%C3%A3o_Francisco,_Lisbon,_Portugal_julesvernex2.jpg"
   }
 };

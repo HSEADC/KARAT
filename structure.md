@@ -17,13 +17,13 @@
 - /pages
   - universities.html
   - university.html
+  - russia.html
   - articles.html
   - article.html
   - glossary.html
   - tests.html
-  - compare.html
-  - saved.html
   - about.html
+  - soon.html
   - /articles
     - free-europe.html
   - /tests

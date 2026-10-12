@@ -41,7 +41,6 @@
 .num, .ucard__data dd, .check__count, .range-value { font-variant-numeric: tabular-nums; }
 .link { text-decoration: underline; text-underline-offset: 3px; }
 .link:hover { color: var(--green); }
-.display { font: 500 64px/1.05 var(--font-head); letter-spacing: -0.03em; margin: 0; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ---------- кнопки ---------- */
@@ -411,10 +410,6 @@ a.sticker-circle:hover { transform: rotate(var(--r, 0deg)) scale(1.04); }
 .gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; } .gap-24 { gap: 24px; } .gap-32 { gap: 32px; }
 .row { display: flex; align-items: center; }
 .between { justify-content: space-between; }
-.facts { display: flex; flex-direction: column; margin: 0; }
-.facts div { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--raised); font-size: 16px; }
-.facts dt { color: var(--graphite); }
-.facts dd { margin: 0; text-align: right; font-weight: 600; }
 .scroller { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 20px 0 8px; scrollbar-width: thin; }
 .scroller > * { scroll-snap-align: start; flex: 0 0 330px; }
 .page-section { padding: 80px 0 0; }
@@ -495,6 +490,8 @@ a.sticker-circle:hover { transform: rotate(var(--r, 0deg)) scale(1.04); }
 .stub__inner { min-height: 100vh; display: flex; flex-direction: column; gap: 40px; padding-top: 34px; padding-bottom: 40px; }
 .stub__top { display: flex; justify-content: space-between; align-items: center; }
 .stub__top .logo svg { height: 24px; }
+.stub__tg { font-weight: 600; }
+.stub__tg:hover { text-decoration: underline; text-underline-offset: 4px; }
 .stub__body { flex: 1; display: grid; grid-template-columns: 1fr 440px; gap: 64px; align-items: center; }
 .stub__text { display: flex; flex-direction: column; gap: 28px; align-items: flex-start; }
 .stub__title { font-size: 64px; line-height: 1.06; }
