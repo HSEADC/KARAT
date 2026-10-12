@@ -23,7 +23,7 @@
   - glossary.html
   - tests.html
   - about.html
-  - soon.html
+  - feedback.html
   - /articles
     - free-europe.html
   - /tests

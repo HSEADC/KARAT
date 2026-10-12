@@ -22,8 +22,8 @@ const pages = {
   about: { file: 'pages/about.html', chunks: allChunks },
   russia: { file: 'pages/russia.html', chunks: allChunks },
 
-  // заглушка
-  soon: { file: 'pages/soon.html', chunks: allChunks },
+  // заглушка: обратная связь
+  feedback: { file: 'pages/feedback.html', chunks: allChunks },
 
   // статья-пример
   freeEurope: { file: 'pages/articles/free-europe.html', chunks: allChunks },
@@ -83,6 +83,6 @@ export default defineConfig(({ command }) => ({
   },
   server: {
     // при запуске сразу открываем заглушку
-    open: '/pages/soon.html'
+    open: '/pages/feedback.html'
   }
 }))
