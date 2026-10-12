@@ -412,9 +412,9 @@ a.sticker-circle:hover { transform: rotate(var(--r, 0deg)) scale(1.04); }
 .between { justify-content: space-between; }
 .scroller { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 20px 0 8px; scrollbar-width: thin; }
 .scroller > * { scroll-snap-align: start; flex: 0 0 330px; }
-.page-section { padding: 80px 0 0; }
-.page-section:last-child { padding-bottom: 96px; }
-.page { padding-top: 56px; padding-bottom: 96px; display: flex; flex-direction: column; gap: 72px; }
+.page-section { padding: 64px 0 0; }
+.page-section:last-child { padding-bottom: 64px; }
+.page { padding-top: 48px; padding-bottom: 56px; display: flex; flex-direction: column; gap: 56px; }
 .section-head { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 32px; }
 .section-head .h1 { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
 .is-hidden { display: none !important; }
