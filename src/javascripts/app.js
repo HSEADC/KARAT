@@ -725,7 +725,23 @@ function initAnimations() {
   $$(".band").filter(b => !b.classList.contains("reveal")).forEach(b => $$(".band__num", b).forEach(splitFlap));
 }
 
+/* ---------- типографика: без висячих предлогов ---------- */
+// короткие слова приклеиваем к следующему, тире — к предыдущему
+const SHORT = /(^|[\s(«"„])(в|во|к|ко|с|со|о|об|обо|у|и|а|но|да|на|по|за|из|от|до|не|ни|для|при|без|под|над|про|или|что|как|это|из-за|через)[ \t\n]+/giu;
+const typoText = t => t.replace(SHORT, "$1$2\u00a0").replace(SHORT, "$1$2\u00a0").replace(/[ \t\n]+—/g, "\u00a0—").replace(/(\d)[ \t]+(?=[a-zа-яё%€$£])/giu, "$1\u00a0");
+function typograph(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => n.parentElement && !n.parentElement.closest("script, style, textarea") && /\S/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+  });
+  for (let n; (n = walker.nextNode());) { const v = typoText(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; }
+}
+// тексты, которые скрипт дорисовывает позже, тоже обрабатываем
+new MutationObserver(list => list.forEach(m => m.addedNodes.forEach(n => {
+  if (n.nodeType === 1) typograph(n); else if (n.nodeType === 3 && n.parentElement) typograph(n.parentElement);
+}))).observe(document.body, { childList: true, subtree: true });
+
 /* ---------- запуск ---------- */
+typograph(document.body);
 renderChrome();
 fillCounts();
 if (pages[page]) pages[page]();
