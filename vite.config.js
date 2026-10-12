@@ -82,6 +82,7 @@ export default defineConfig(({ command }) => ({
     }
   },
   server: {
-    open: true
+    // при запуске сразу открываем заглушку
+    open: '/pages/soon.html'
   }
 }))
