@@ -18,7 +18,7 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&a
 const params = new URLSearchParams(location.search);
 // пути считаем от корня сайта
 const ROOT = document.body.dataset.root || "";
-const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "about.html": "pages/about.html", "russia.html": "pages/russia.html", "feedback.html": "pages/feedback.html"};
+const PAGES = {"index.html": "index.html", "universities.html": "pages/universities.html", "university.html": "pages/university.html", "articles.html": "pages/articles.html", "article.html": "pages/articles/article.html", "glossary.html": "pages/glossary.html", "tests.html": "pages/tests.html", "match.html": "pages/tests/match.html", "quiz.html": "pages/tests/quiz.html", "about.html": "pages/about.html", "russia.html": "pages/russia.html", "feedback.html": "pages/feedback.html"};
 const url = file => ROOT + (PAGES[file] || file);
 const FORM_URL = "https://formspree.io/f/mppqrdqz";
 const TG = "https://t.me/zagranmedia";

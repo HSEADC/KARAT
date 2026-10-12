@@ -16,7 +16,6 @@ const pages = {
   universities: { file: 'pages/universities.html', chunks: allChunks },
   university: { file: 'pages/university.html', chunks: allChunks },
   articles: { file: 'pages/articles.html', chunks: allChunks },
-  article: { file: 'pages/article.html', chunks: allChunks },
   glossary: { file: 'pages/glossary.html', chunks: allChunks },
   tests: { file: 'pages/tests.html', chunks: allChunks },
   about: { file: 'pages/about.html', chunks: allChunks },
@@ -25,7 +24,8 @@ const pages = {
   // заглушка: обратная связь
   feedback: { file: 'pages/feedback.html', chunks: allChunks },
 
-  // статья-пример
+  // статьи: шаблон и статья-пример
+  article: { file: 'pages/articles/article.html', chunks: allChunks },
   freeEurope: { file: 'pages/articles/free-europe.html', chunks: allChunks },
 
   // тесты

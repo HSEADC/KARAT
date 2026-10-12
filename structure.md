@@ -19,12 +19,12 @@
   - university.html
   - russia.html
   - articles.html
-  - article.html
   - glossary.html
   - tests.html
   - about.html
   - feedback.html
   - /articles
+    - article.html
     - free-europe.html
   - /tests
     - match.html
