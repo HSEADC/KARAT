@@ -496,8 +496,11 @@ a.sticker-circle:hover { transform: rotate(var(--r, 0deg)) scale(1.04); }
 .stub__text { display: flex; flex-direction: column; gap: 28px; align-items: flex-start; }
 .stub__title { font-size: 64px; line-height: 1.06; }
 .stub__text .lead { margin: 0; max-width: 640px; color: var(--tint); }
-.stub__form { display: flex; gap: 14px; width: 100%; max-width: 700px; }
-.stub__form input { flex: 1; min-width: 0; height: 68px; padding: 0 28px; border: 0; border-radius: 999px; background: var(--white); font-size: 18px; outline: none; }
+.stub__form { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; width: 100%; max-width: 700px; }
+.stub__form input, .stub__form textarea { width: 100%; border: 0; background: var(--white); font: inherit; font-size: 18px; color: var(--ink); outline: 2px solid transparent; transition: outline-color .15s; }
+.stub__form input { height: 68px; padding: 0 28px; border-radius: 999px; }
+.stub__form textarea { min-height: 150px; padding: 22px 28px; border-radius: var(--r-xl); resize: vertical; }
+.stub__form input:focus, .stub__form textarea:focus { outline-color: var(--tint); }
 .stub__form .btn { height: 68px; }
 .stub__art { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .stub__art .photo-circle { --d: 360px; }

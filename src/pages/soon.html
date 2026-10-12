@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ЗАГРАНЬ — медиа о поступлении за границу из России. Скоро запуск.">
-<title>ЗАГРАНЬ — скоро запуск</title>
+  <meta name="description" content="ЗАГРАНЬ — медиа о поступлении за границу из России. Напиши нам вопрос или идею.">
+<title>ЗАГРАНЬ — обратная связь</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png">
@@ -19,14 +19,16 @@
     </header>
     <section class="stub__body">
       <div class="stub__text">
-        <span class="sticker sticker--l" style="--r:-5deg">скоро запуск</span>
-        <h1 class="h1 stub__title">Поступить за границу из России — по фактам</h1>
-        <p class="lead">Собираем, где сдать экзамен по английскому, куда сейчас дают учебные визы и сколько стоит учёба. Только официальные источники.</p>
-        <form class="stub__form" data-form="subscribe" action="https://formspree.io/f/mppqrdqz" method="POST" novalidate>
+        <span class="sticker sticker--l" style="--r:-5deg">обратная связь</span>
+        <h1 class="h1 stub__title">Есть вопрос о поступлении? Напиши нам</h1>
+        <p class="lead">Спроси, чего не нашёл на сайте, или подскажи, что поправить. Ответим на почту, а частые вопросы разберём в статьях.</p>
+        <form class="stub__form" data-form="feedback" action="https://formspree.io/f/mppqrdqz" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="ЗАГРАНЬ: обратная связь">
           <input type="email" name="email" placeholder="Твоя почта" aria-label="Почта" required>
-          <button class="btn btn--light" type="submit">Сообщить о запуске</button>
+          <textarea name="message" rows="4" placeholder="Твой вопрос или идея" aria-label="Сообщение" required></textarea>
+          <button class="btn btn--light" type="submit">Отправить</button>
         </form>
-        <p class="small" style="margin:0;color:var(--tint)">Пришлём одно письмо, когда откроемся</p>
+        <p class="small" style="margin:0;color:var(--tint)">Пишем только по твоему вопросу, без рассылок</p>
       </div>
       <div class="stub__art">
         <span class="sticker sticker--mint sticker--s" style="--r:-4deg">виза D ≠ шенген</span>

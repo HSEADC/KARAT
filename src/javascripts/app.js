@@ -156,18 +156,20 @@ document.addEventListener("click", e => {
   if (e.target.matches("[data-overlay]")) closeSearch();
 });
 
-// подписка через formspree
+// подписка и обратная связь через formspree
 document.addEventListener("submit", async e => {
-  if (e.target.dataset.form !== "subscribe") return;
+  const type = e.target.dataset.form;
+  if (type !== "subscribe" && type !== "feedback") return;
   e.preventDefault();
-  const form = e.target, inp = $("input", form), btn = $("button", form);
+  const form = e.target, inp = $("input[type=email]", form), msg = $("textarea", form), btn = $("button", form);
   if (!/^\S+@\S+\.\S+$/.test(inp.value)) { toast("Проверь почту"); inp.focus(); return; }
+  if (msg && !msg.value.trim()) { toast("Напиши сообщение"); msg.focus(); return; }
   btn.disabled = true;
   try {
     const res = await fetch(FORM_URL, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) });
     if (!res.ok) throw new Error(res.status);
     form.reset();
-    toast("Спасибо! Подписка оформлена");
+    toast(type === "feedback" ? "Спасибо! Сообщение отправлено" : "Спасибо! Подписка оформлена");
   } catch (err) {
     toast("Не получилось отправить, попробуй ещё раз");
   }
